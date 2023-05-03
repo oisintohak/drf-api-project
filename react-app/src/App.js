@@ -1,32 +1,17 @@
-import "./App.css";
-import { axiosReq, axiosRes } from "./api/axiosDefaults";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import NavBar from "./components/NavBar";
+import { Route, Switch } from "react-router-dom";
 
 function App() {
-  const [events, setEvents] = useState(null);
-
-  const fetchEvents = async () => {
-    try {
-      const { data } = await axiosRes.get("events");
-      console.log(data);
-      setEvents(data);
-      console.log(events);
-    } catch (err) {
-      // console.log(err);
-    }
-  };
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-  return <div>
-    {events && 
-      <>
-      {events[0].title}
-      {events[0]['starts_at']}
-      </>
-    }
-  </div>;
+  return (
+    <div>
+      <NavBar />
+      <Switch>
+        <Route exact path="/" render={() => <><h1>home</h1></>} />
+        <Route exact path="/login" render={() => <><h1>login</h1></>} />
+        <Route exact path="/register" render={() => <><h1>register</h1></>} />
+      </Switch>
+    </div>
+  );
 }
 
 export default App;
