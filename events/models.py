@@ -7,7 +7,10 @@ class Event(models.Model):
     title = models.CharField(max_length=400)
     starts_at = models.DateTimeField()
     ends_at = models.DateTimeField()
-    location = models.URLField()  # correct field type to be determined
+    lat = models.CharField(max_length=100)
+    long = models.CharField(max_length=100)
+    address = models.CharField(max_length=400)
+    place_id = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

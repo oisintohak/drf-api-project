@@ -6,10 +6,12 @@ from .models import Event
 from .serializers import EventSerializer
 
 
-class EventList(generics.ListAPIView):
-
+class EventList(generics.ListCreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 
 class EventDetail(generics.RetrieveUpdateAPIView):

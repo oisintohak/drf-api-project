@@ -20,19 +20,17 @@ const EventList = () => {
 
   return (
     <div>
-      {loaded && (
-        <>
-          {events ? (
-            <>
-              {events.results.map((event) => (
-                <Event {...event} />
-              ))}
-            </>
-          ) : (
-            <>no events</>
-          )}
-        </>
-      )}
+      <>
+        {events.results?.length ? (
+          <>
+            {events.results.map((event) => (
+              <Event {...event} />
+            ))}
+          </>
+        ) : (
+          <>no events</>
+        )}
+      </>
     </div>
   );
 };

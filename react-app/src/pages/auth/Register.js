@@ -110,11 +110,6 @@ const RegisterForm = () => {
           </Link>
         </Container>
       </Col>
-      <Col md={6} className="my-auto d-none d-md-block p-2">
-        <Image
-          src={"https://codeinstitute.s3.amazonaws.com/AdvancedReact/hero2.jpg"}
-        />
-      </Col>
     </Row>
   );
 };

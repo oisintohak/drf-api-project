@@ -25,6 +25,13 @@
    "terminal.integrated.gpuAcceleration": "canvas",
    "editor.defaultFormatter": "HookyQR.beautify",
    "[python]": {
-      "editor.defaultFormatter": "ms-python.python"
+      "editor.defaultFormatter": "ms-python.autopep8"
+   },
+   "[javascript]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+   },
+   "python.formatting.provider": "none",
+   "[javascriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
    }
 }

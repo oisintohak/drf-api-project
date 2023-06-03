@@ -35,6 +35,9 @@ function NavBar() {
               <NavLink to="/" onClick={handleLogout} className="mx-2">
                 Logout
               </NavLink>
+              <NavLink to="/create-event" className="mx-2">
+                Create Event
+              </NavLink>
             </>
           ) : (
             <>

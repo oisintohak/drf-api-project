@@ -1,0 +1,1 @@
+python3 manage.py runserver & cd react-app && npm start
