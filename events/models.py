@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class Event(models.Model):
-    created_by = models.OneToOneField(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=400)
     starts_at = models.DateTimeField()
     ends_at = models.DateTimeField()
@@ -43,7 +43,7 @@ class EventGuest(models.Model):
 
 
 class SubEvent(models.Model):
-    created_by = models.OneToOneField(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     title = models.CharField(max_length=400)
     starts_at = models.DateTimeField()

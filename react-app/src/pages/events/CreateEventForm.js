@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import dayjs, { Dayjs } from "dayjs";
+import Alert from "react-bootstrap/Alert";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -48,7 +48,6 @@ const CreateEventForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("submit");
     const formData = new FormData();
 
     for (const [key, value] of Object.entries(eventData)) {
@@ -77,20 +76,35 @@ const CreateEventForm = () => {
             onChange={handleChange}
           />
         </Form.Group>
+        {errors?.title?.map((message, idx) => (
+          <Alert variant="warning" key={idx}>
+            {message}
+          </Alert>
+        ))}
         <Form.Group>
           <Form.Label>Address:</Form.Label>
           <Form.Control
             type="text"
-            onChange={(e) => {
-              console.log(e);
-            }}
             ref={bootstrapRef}
           />
         </Form.Group>
+        {errors?.address?.map((message, idx) =>
+          idx === 0 ? (
+            <div key={idx}>
+              <Alert variant="warning">
+                Please select an address from the dropdown
+              </Alert>
+              <Alert variant="warning">{message}</Alert>
+            </div>
+          ) : (
+            <div key={idx}>
+              <Alert variant="warning">{message}</Alert>
+            </div>
+          )
+        )}
         <Form.Group>
           <Form.Label>Starts at:</Form.Label>
           <DateTimePicker
-            defaultValue={dayjs()}
             onAccept={(e) => {
               setEventData({
                 ...eventData,
@@ -99,10 +113,14 @@ const CreateEventForm = () => {
             }}
           />
         </Form.Group>
+        {errors?.starts_at?.map((message, idx) => (
+          <Alert variant="warning" key={idx}>
+            {message}
+          </Alert>
+        ))}
         <Form.Group>
           <Form.Label>Ends at:</Form.Label>
           <DateTimePicker
-            defaultValue={dayjs()}
             onAccept={(e) => {
               setEventData({
                 ...eventData,
@@ -111,6 +129,11 @@ const CreateEventForm = () => {
             }}
           />
         </Form.Group>
+        {errors?.ends_at?.map((message, idx) => (
+          <Alert variant="warning" key={idx}>
+            {message}
+          </Alert>
+        ))}
         <Button type="submit">Create Event</Button>
       </Form>
     </LocalizationProvider>
