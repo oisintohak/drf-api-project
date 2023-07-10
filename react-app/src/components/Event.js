@@ -1,6 +1,6 @@
-
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import { Link } from "react-router-dom";
 
 function Event(props) {
   const {
@@ -13,8 +13,10 @@ function Event(props) {
     created_at,
     updated_at,
     is_creator,
+    eventlist,
   } = props;
-  return (
+
+  const card = (
     <Card style={{ width: "18rem" }}>
       <Card.Img variant="top" src="" />
       <Card.Body>
@@ -26,18 +28,28 @@ function Event(props) {
         )}
 
         <Card.Text>
-          <h3>Details:</h3>
-          <ul>
-            {starts_at && <li>Starts at: {starts_at}</li>}
-            {ends_at && <li>Ends at: {ends_at}</li>}
-            {location && <li>Location: {location}</li>}
-            {created_at && <li>Created: {created_at}</li>}
-            {updated_at && <li>Updated: {updated_at}</li>}
-          </ul>
+          Details:
+          {starts_at && <span>Starts at: {starts_at}</span>}
+          {ends_at && <span>Ends at: {ends_at}</span>}
+          {location && <span>Location: {location}</span>}
+          {created_at && <span>Created: {created_at}</span>}
+          {updated_at && <span>Updated: {updated_at}</span>}
         </Card.Text>
         <Button variant="primary">Link</Button>
       </Card.Body>
     </Card>
+  );
+
+  return (
+    <div>
+      {eventlist ? (
+        <Link key={id} to={`/events/${id}`}>
+          {card}
+        </Link>
+      ) : (
+        card
+      )}
+    </div>
   );
 }
 

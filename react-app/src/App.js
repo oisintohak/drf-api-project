@@ -4,6 +4,7 @@ import RegisterForm from "./pages/auth/Register";
 import LoginForm from "./pages/auth/Login";
 import EventList from "./pages/events/EventList";
 import CreateEventForm from "./pages/events/CreateEventForm";
+import EventDetail from "./pages/events/EventDetail";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
         />
         <Route exact path="/login" render={() => <LoginForm />} />
         <Route exact path="/register" render={() => <RegisterForm />} />
+        <Route exact path="/events/:id" render={() => <EventDetail />} />
+        <Route exact path="/events/" render={() => <EventList />} />
         <Route exact path="/create-event" render={() => <CreateEventForm />} />
         
       </Switch>

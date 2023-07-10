@@ -22,7 +22,7 @@ function NavBar() {
     }
   };
   return (
-    <Navbar>
+    <Navbar expand='md'>
       <Container>
         <NavLink to="/">
           <Navbar.Brand>Eventually</Navbar.Brand>

@@ -28,7 +28,7 @@
       "editor.defaultFormatter": "ms-python.autopep8"
    },
    "[javascript]": {
-      "editor.defaultFormatter": "vscode.typescript-language-features"
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
    },
    "python.formatting.provider": "none",
    "[javascriptreact]": {

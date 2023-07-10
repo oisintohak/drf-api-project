@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { axiosReq } from "../../api/axiosDefaults";
 import Event from "../../components/Event";
+import { Link } from "react-router-dom";
 
 const EventList = () => {
   const [events, setEvents] = useState({ results: [] });
@@ -20,17 +21,21 @@ const EventList = () => {
 
   return (
     <div>
-      <>
-        {events.results?.length ? (
-          <>
-            {events.results.map((event) => (
-              <Event {...event} />
-            ))}
-          </>
-        ) : (
-          <>no events</>
-        )}
-      </>
+      {loaded ? (
+        <>
+          {events.results?.length ? (
+            <>
+              {events.results.map((event) => (
+                <Event {...event} eventlist />
+              ))}
+            </>
+          ) : (
+            <>no events</>
+          )}
+        </>
+      ) : (
+        <span>loading...</span>
+      )}
     </div>
   );
 };

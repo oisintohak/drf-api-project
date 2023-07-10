@@ -7,10 +7,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { usePlacesWidget } from "react-google-autocomplete";
 import { axiosReq } from "../../api/axiosDefaults";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const CreateEventForm = () => {
+  const history = useHistory();
   const [errors, setErrors] = useState({});
-
   const [eventData, setEventData] = useState({
     title: "",
     starts_at: "",
@@ -20,9 +21,7 @@ const CreateEventForm = () => {
     address: "",
     place_id: "",
   });
-
   const { title, starts_at, ends_at, lat, long, address, place_id } = eventData;
-
   const { ref: bootstrapRef } = usePlacesWidget({
     apiKey: process.env.REACT_APP_GMAPS_API_KEY,
     onPlaceSelected: (place) => {
@@ -38,24 +37,22 @@ const CreateEventForm = () => {
       types: ["geocode", "establishment"],
     },
   });
-
   const handleChange = (event) => {
     setEventData({
       ...eventData,
       [event.target.name]: event.target.value,
     });
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-
     for (const [key, value] of Object.entries(eventData)) {
       formData.append(key, value);
     }
     try {
       const { data } = await axiosReq.post("/events/", formData);
       console.log(data);
+      history.push(`/events/${data.id}`);
     } catch (err) {
       console.log(err);
       if (err.response?.status !== 401) {
@@ -106,10 +103,12 @@ const CreateEventForm = () => {
           <Form.Label>Starts at:</Form.Label>
           <DateTimePicker
             onAccept={(e) => {
-              setEventData({
-                ...eventData,
-                starts_at: e.format(),
-              });
+              if (e) {
+                setEventData({
+                  ...eventData,
+                  starts_at: e.format(),
+                })
+              }
             }}
           />
         </Form.Group>
@@ -122,12 +121,13 @@ const CreateEventForm = () => {
           <Form.Label>Ends at:</Form.Label>
           <DateTimePicker
             onAccept={(e) => {
-              setEventData({
-                ...eventData,
-                ends_at: e.format(),
-              });
-            }}
-          />
+              if (e) {
+                setEventData({
+                  ...eventData,
+                  ends_at: e.format(),
+                })
+              }
+            }} />
         </Form.Group>
         {errors?.ends_at?.map((message, idx) => (
           <Alert variant="warning" key={idx}>
