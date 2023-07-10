@@ -2,6 +2,26 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 
+import ListGroup from "react-bootstrap/ListGroup";
+
+const card1 = (
+  <Card>
+    <Card.Body>
+      <Card.Title>Card Title</Card.Title>
+      <Card.Text></Card.Text>
+    </Card.Body>
+    <ListGroup className="list-group-flush">
+      <ListGroup.Item>Cras justo odio</ListGroup.Item>
+      <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
+      <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
+    </ListGroup>
+    <Card.Body>
+      <Card.Link href="#">Card Link</Card.Link>
+      <Card.Link href="#">Another Link</Card.Link>
+    </Card.Body>
+  </Card>
+);
+
 function Event(props) {
   const {
     id,
@@ -9,7 +29,7 @@ function Event(props) {
     title,
     starts_at,
     ends_at,
-    location,
+    address,
     created_at,
     updated_at,
     is_creator,
@@ -17,7 +37,7 @@ function Event(props) {
   } = props;
 
   const card = (
-    <Card style={{ width: "18rem" }}>
+    <Card>
       <Card.Img variant="top" src="" />
       <Card.Body>
         {title && (
@@ -26,17 +46,15 @@ function Event(props) {
             {created_by && <span>Created by: {created_by}</span>}
           </>
         )}
-
-        <Card.Text>
-          Details:
-          {starts_at && <span>Starts at: {starts_at}</span>}
-          {ends_at && <span>Ends at: {ends_at}</span>}
-          {location && <span>Location: {location}</span>}
-          {created_at && <span>Created: {created_at}</span>}
-          {updated_at && <span>Updated: {updated_at}</span>}
-        </Card.Text>
-        <Button variant="primary">Link</Button>
       </Card.Body>
+      <ListGroup className="list-group-flush">
+        {starts_at && <ListGroup.Item>Starts at: {starts_at}</ListGroup.Item>}
+        {ends_at && <ListGroup.Item>Ends at: {ends_at}</ListGroup.Item>}
+        {address && <ListGroup.Item>Address: {address}</ListGroup.Item>}
+        {created_at && <ListGroup.Item>Created: {created_at}</ListGroup.Item>}
+        {updated_at && <ListGroup.Item>Updated: {updated_at}</ListGroup.Item>}
+      </ListGroup>
+      <Button>Details</Button>
     </Card>
   );
 

@@ -7,7 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { usePlacesWidget } from "react-google-autocomplete";
 import { axiosReq } from "../../api/axiosDefaults";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const CreateEventForm = () => {
   const history = useHistory();
@@ -62,81 +62,86 @@ const CreateEventForm = () => {
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group>
-          <Form.Label>Title</Form.Label>
-          <Form.Control
-            type="text"
-            name="title"
-            value={title}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        {errors?.title?.map((message, idx) => (
-          <Alert variant="warning" key={idx}>
-            {message}
-          </Alert>
-        ))}
-        <Form.Group>
-          <Form.Label>Address:</Form.Label>
-          <Form.Control
-            type="text"
-            ref={bootstrapRef}
-          />
-        </Form.Group>
-        {errors?.address?.map((message, idx) =>
-          idx === 0 ? (
-            <div key={idx}>
-              <Alert variant="warning">
-                Please select an address from the dropdown
-              </Alert>
-              <Alert variant="warning">{message}</Alert>
-            </div>
-          ) : (
-            <div key={idx}>
-              <Alert variant="warning">{message}</Alert>
-            </div>
-          )
-        )}
-        <Form.Group>
-          <Form.Label>Starts at:</Form.Label>
-          <DateTimePicker
-            onAccept={(e) => {
-              if (e) {
-                setEventData({
-                  ...eventData,
-                  starts_at: e.format(),
-                })
-              }
-            }}
-          />
-        </Form.Group>
-        {errors?.starts_at?.map((message, idx) => (
-          <Alert variant="warning" key={idx}>
-            {message}
-          </Alert>
-        ))}
-        <Form.Group>
-          <Form.Label>Ends at:</Form.Label>
-          <DateTimePicker
-            onAccept={(e) => {
-              if (e) {
-                setEventData({
-                  ...eventData,
-                  ends_at: e.format(),
-                })
-              }
-            }} />
-        </Form.Group>
-        {errors?.ends_at?.map((message, idx) => (
-          <Alert variant="warning" key={idx}>
-            {message}
-          </Alert>
-        ))}
-        <Button type="submit">Create Event</Button>
-      </Form>
-    </LocalizationProvider>
+    <main>
+      <h1 className="text-center my-3">Create a new event:</h1>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="my-3">
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              type="text"
+              name="title"
+              value={title}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          {errors?.title?.map((message, idx) => (
+            <Alert variant="warning" key={idx}>
+              {message}
+            </Alert>
+          ))}
+          <Form.Group className="my-3">
+            <Form.Label>Address:</Form.Label>
+            <Form.Control type="text" ref={bootstrapRef} />
+          </Form.Group>
+          {errors?.address?.map((message, idx) =>
+            idx === 0 ? (
+              <div key={idx}>
+                <Alert variant="warning">
+                  Please select an address from the dropdown
+                </Alert>
+                <Alert variant="warning">{message}</Alert>
+              </div>
+            ) : (
+              <div key={idx}>
+                <Alert variant="warning">{message}</Alert>
+              </div>
+            )
+          )}
+          <Form.Group className="my-3">
+            <Form.Label>Starts at:</Form.Label>
+            <DateTimePicker
+              className="d-block"
+              onAccept={(e) => {
+                if (e) {
+                  setEventData({
+                    ...eventData,
+                    starts_at: e.format(),
+                  });
+                }
+              }}
+            />
+          </Form.Group>
+          {errors?.starts_at?.map((message, idx) => (
+            <Alert variant="warning" key={idx}>
+              {message}
+            </Alert>
+          ))}
+          <Form.Group className="my-3">
+            <Form.Label>Ends at:</Form.Label>
+            <DateTimePicker
+              className="d-block"
+              onAccept={(e) => {
+                if (e) {
+                  setEventData({
+                    ...eventData,
+                    ends_at: e.format(),
+                  });
+                }
+              }}
+            />
+          </Form.Group>
+          {errors?.ends_at?.map((message, idx) => (
+            <Alert variant="warning" key={idx}>
+              {message}
+            </Alert>
+          ))}
+          <Button className="my-3" type="submit">
+            Create Event
+          </Button>
+        </Form>
+      </LocalizationProvider>
+    </main>
   );
 };
 
