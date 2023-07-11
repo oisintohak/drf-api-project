@@ -1,8 +1,8 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
-
 import ListGroup from "react-bootstrap/ListGroup";
+import ProfileImage from "./ProfileImage";
 
 const card1 = (
   <Card>
@@ -25,7 +25,7 @@ const card1 = (
 function Event(props) {
   const {
     id,
-    created_by,
+    creator_username,
     title,
     starts_at,
     ends_at,
@@ -34,6 +34,7 @@ function Event(props) {
     updated_at,
     is_creator,
     eventlist,
+    profile_image,
   } = props;
 
   const card = (
@@ -43,7 +44,12 @@ function Event(props) {
         {title && (
           <>
             <Card.Title>{title}</Card.Title>
-            {created_by && <span>Created by: {created_by}</span>}
+            {creator_username && (
+              <span>
+                Created by:
+                <ProfileImage src={profile_image} /> {creator_username}
+              </span>
+            )}
           </>
         )}
       </Card.Body>

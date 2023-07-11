@@ -11,8 +11,11 @@ class Profile(models.Model):
     first_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
     image = models.ImageField(
-        upload_to='images/', default='../default_profile_qdjgyp'
+        upload_to='images/', default='default_profile'
     )
+
+    def __str__(self):
+        return f'{self.user.username}'
 
 
 @receiver(post_save, sender=User)

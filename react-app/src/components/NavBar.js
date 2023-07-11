@@ -1,13 +1,12 @@
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
 import { NavLink } from "react-router-dom";
 import {
   useCurrentUser,
   useSetCurrentUser,
 } from "../contexts/CurrentUserContext";
 import { axiosReq } from "../api/axiosDefaults";
-import NavbarBrand from "react-bootstrap/esm/NavbarBrand";
+import ProfileImage from "./ProfileImage";
 
 function NavBar() {
   const currentUser = useCurrentUser();
@@ -50,6 +49,7 @@ function NavBar() {
             </>
           )}
         </Navbar.Collapse>
+        <ProfileImage src={currentUser?.profile_image} />
       </Container>
     </Navbar>
   );
