@@ -21,7 +21,7 @@ function NavBar() {
     }
   };
   return (
-    <Navbar expand='md'>
+    <Navbar expand="md">
       <Container>
         <NavLink to="/">
           <Navbar.Brand>Eventually</Navbar.Brand>
@@ -30,12 +30,11 @@ function NavBar() {
         <Navbar.Collapse className="justify-content-end">
           {currentUser ? (
             <>
-              <Navbar.Text>Welcome, {currentUser.username}</Navbar.Text>
-              <NavLink to="/" onClick={handleLogout} className="mx-2">
-                Logout
-              </NavLink>
               <NavLink to="/create-event" className="mx-2">
                 Create Event
+              </NavLink>
+              <NavLink to="/" onClick={handleLogout} className="mx-2">
+                Logout
               </NavLink>
             </>
           ) : (
@@ -49,6 +48,7 @@ function NavBar() {
             </>
           )}
         </Navbar.Collapse>
+        <Navbar.Text>{currentUser?.username}</Navbar.Text>
         <ProfileImage src={currentUser?.profile_image} />
       </Container>
     </Navbar>
