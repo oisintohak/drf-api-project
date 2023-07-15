@@ -8,10 +8,30 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { usePlacesWidget } from "react-google-autocomplete";
 import { axiosReq } from "../../api/axiosDefaults";
 import { useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const CreateEventForm = () => {
   const history = useHistory();
-  const [errors, setErrors] = useState({});
+  // const [errors, setErrors] = useState({});
+  const [validated, setValidated] = useState(false);
+  const [addressSelected, setAddressSelected] = useState(false);
+  // const handleSubmit = (event) => {
+  //   const form = event.currentTarget;
+  //   if (form.checkValidity() === false) {
+  //     event.preventDefault();
+  //     event.stopPropagation();
+  //   }
+
+  //   setValidated(true);
+  // };
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
   const [eventData, setEventData] = useState({
     title: "",
     starts_at: "",
@@ -25,13 +45,14 @@ const CreateEventForm = () => {
   const { ref: bootstrapRef } = usePlacesWidget({
     apiKey: process.env.REACT_APP_GMAPS_API_KEY,
     onPlaceSelected: (place) => {
-      setEventData({
-        ...eventData,
+      setEventData((prevEventData) => ({
+        ...prevEventData,
         lat: place.geometry.location.lat(),
         long: place.geometry.location.lng(),
         address: place.formatted_address,
         place_id: place.place_id,
-      });
+      }));
+      setAddressSelected(true);
     },
     options: {
       types: ["geocode", "establishment"],
@@ -43,37 +64,41 @@ const CreateEventForm = () => {
       [event.target.name]: event.target.value,
     });
   };
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    for (const [key, value] of Object.entries(eventData)) {
-      formData.append(key, value);
-    }
-    try {
-      const { data } = await axiosReq.post("/events/", formData);
-      console.log(data);
-      history.push(`/events/${data.id}`);
-    } catch (err) {
-      console.log(err);
-      if (err.response?.status !== 401) {
-        setErrors(err.response?.data);
-      }
-    }
-  };
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const formData = new FormData();
+  //   for (const [key, value] of Object.entries(eventData)) {
+  //     formData.append(key, value);
+  //   }
+  //   try {
+  //     const { data } = await axiosReq.post("/events/", formData);
+  //     console.log(data);
+  //     history.push(`/events/${data.id}`);
+  //   } catch (err) {
+  //     console.log(err);
+  //     if (err.response?.status !== 401) {
+  //       setErrors(err.response?.data);
+  //     }
+  //   }
+  // };
 
   return (
     <main>
       <h1 className="text-center my-3">Create a new event:</h1>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="my-3">
+        <Form validated={validated} noValidate onSubmit={handleSubmit}>
+          <Form.Group className="my-3" controlId="test1">
             <Form.Label>Title</Form.Label>
             <Form.Control
+              required
               type="text"
               name="title"
               value={title}
               onChange={handleChange}
             />
+            <Form.Control.Feedback type="invalid">
+              Please enter a title.
+            </Form.Control.Feedback>
           </Form.Group>
           {errors?.title?.map((message, idx) => (
             <Alert variant="warning" key={idx}>
@@ -81,14 +106,25 @@ const CreateEventForm = () => {
             </Alert>
           ))}
           <Form.Group className="my-3">
-            <Form.Label>Address:</Form.Label>
-            <Form.Control type="text" ref={bootstrapRef} />
+            <Form.Label>
+              Address (search for an address and select a valid address from the
+              dropdown):
+            </Form.Label>
+            <Form.Control
+              isValid={addressSelected}
+              type="text"
+              ref={bootstrapRef}
+            />
+            <Form.Text>Selected Address: {address}</Form.Text>
+            <Form.Control.Feedback type="invalid">
+              Please select an address from the dropdown.
+            </Form.Control.Feedback>
           </Form.Group>
           {errors?.address?.map((message, idx) =>
             idx === 0 ? (
               <div key={idx}>
                 <Alert variant="warning">
-                  Please select an address from the dropdown
+                  Please select an address from the dropdown.
                 </Alert>
                 <Alert variant="warning">{message}</Alert>
               </div>
@@ -101,6 +137,7 @@ const CreateEventForm = () => {
           <Form.Group className="my-3">
             <Form.Label>Starts at:</Form.Label>
             <DateTimePicker
+              required
               className="d-block"
               onAccept={(e) => {
                 if (e) {
@@ -120,6 +157,7 @@ const CreateEventForm = () => {
           <Form.Group className="my-3">
             <Form.Label>Ends at:</Form.Label>
             <DateTimePicker
+              required
               className="d-block"
               onAccept={(e) => {
                 if (e) {
