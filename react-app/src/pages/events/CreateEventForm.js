@@ -1,36 +1,24 @@
+import { useForm, Controller } from "react-hook-form";
 import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { usePlacesWidget } from "react-google-autocomplete";
-import { axiosReq } from "../../api/axiosDefaults";
-import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
-
-const CreateEventForm = () => {
-  const history = useHistory();
-  // const [errors, setErrors] = useState({});
-  const [validated, setValidated] = useState(false);
-  const [addressSelected, setAddressSelected] = useState(false);
-  // const handleSubmit = (event) => {
-  //   const form = event.currentTarget;
-  //   if (form.checkValidity() === false) {
-  //     event.preventDefault();
-  //     event.stopPropagation();
-  //   }
-
-  //   setValidated(true);
-  // };
-
+import FormGroup from "@mui/material/FormGroup";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
+export default function FormExample() {
   const {
-    register,
+    control,
     handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+    formState: { errors, touchedFields },
+    setValue,
+    trigger,
+  } = useForm({
+    defaultValues: { title: "", address: "", starts_at: "", ends_at: "" },
+  });
+  const [addressSelected, setAddressSelected] = useState(false);
 
   const [eventData, setEventData] = useState({
     title: "",
@@ -41,146 +29,119 @@ const CreateEventForm = () => {
     address: "",
     place_id: "",
   });
-  const { title, starts_at, ends_at, lat, long, address, place_id } = eventData;
-  const { ref: bootstrapRef } = usePlacesWidget({
-    apiKey: process.env.REACT_APP_GMAPS_API_KEY,
-    onPlaceSelected: (place) => {
-      setEventData((prevEventData) => ({
-        ...prevEventData,
-        lat: place.geometry.location.lat(),
-        long: place.geometry.location.lng(),
-        address: place.formatted_address,
-        place_id: place.place_id,
-      }));
-      setAddressSelected(true);
-    },
-    options: {
-      types: ["geocode", "establishment"],
-    },
-  });
-  const handleChange = (event) => {
-    setEventData({
-      ...eventData,
-      [event.target.name]: event.target.value,
-    });
+  const { address } = eventData;
+  const onSubmit = (data) => {
+    console.log(data);
+    console.log(errors);
+    console.log(touchedFields);
   };
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   const formData = new FormData();
-  //   for (const [key, value] of Object.entries(eventData)) {
-  //     formData.append(key, value);
-  //   }
-  //   try {
-  //     const { data } = await axiosReq.post("/events/", formData);
-  //     console.log(data);
-  //     history.push(`/events/${data.id}`);
-  //   } catch (err) {
-  //     console.log(err);
-  //     if (err.response?.status !== 401) {
-  //       setErrors(err.response?.data);
-  //     }
-  //   }
-  // };
 
   return (
     <main>
-      <h1 className="text-center my-3">Create a new event:</h1>
+      <h1>Create a new event:</h1>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Form validated={validated} noValidate onSubmit={handleSubmit}>
-          <Form.Group className="my-3" controlId="test1">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              name="title"
-              value={title}
-              onChange={handleChange}
-            />
-            <Form.Control.Feedback type="invalid">
-              Please enter a title.
-            </Form.Control.Feedback>
-          </Form.Group>
-          {errors?.title?.map((message, idx) => (
-            <Alert variant="warning" key={idx}>
-              {message}
-            </Alert>
-          ))}
-          <Form.Group className="my-3">
-            <Form.Label>
+        <Box onSubmit={handleSubmit(onSubmit)} component="form" noValidate>
+          <Controller
+            name="title"
+            control={control}
+            rules={{ required: "Plase enter a title" }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                helperText={error ? error.message : null}
+                size="small"
+                error={!!error}
+                onChange={onChange}
+                value={value}
+                fullWidth
+                label="title"
+                variant="outlined"
+              />
+            )}
+          />
+          <FormGroup>
+            <label>
               Address (search for an address and select a valid address from the
               dropdown):
-            </Form.Label>
-            <Form.Control
-              isValid={addressSelected}
-              type="text"
-              ref={bootstrapRef}
-            />
-            <Form.Text>Selected Address: {address}</Form.Text>
-            <Form.Control.Feedback type="invalid">
-              Please select an address from the dropdown.
-            </Form.Control.Feedback>
-          </Form.Group>
-          {errors?.address?.map((message, idx) =>
-            idx === 0 ? (
-              <div key={idx}>
-                <Alert variant="warning">
-                  Please select an address from the dropdown.
-                </Alert>
-                <Alert variant="warning">{message}</Alert>
-              </div>
-            ) : (
-              <div key={idx}>
-                <Alert variant="warning">{message}</Alert>
-              </div>
-            )
-          )}
-          <Form.Group className="my-3">
-            <Form.Label>Starts at:</Form.Label>
-            <DateTimePicker
-              required
-              className="d-block"
-              onAccept={(e) => {
-                if (e) {
-                  setEventData({
-                    ...eventData,
-                    starts_at: e.format(),
-                  });
-                }
+            </label>
+            <Controller
+              name="address"
+              control={control}
+              rules={{
+                validate: () => {
+                  if (addressSelected) {
+                    return true;
+                  } else {
+                    return "Please select a valid address from the dropdown";
+                  }
+                },
               }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <GoogleMapsAutocomplete
+                  helperText={error ? error.message : null}
+                  size="small"
+                  error={!!error}
+                  onChange={onChange}
+                  value={value}
+                  setValue={setValue}
+                  trigger={trigger}
+                  setEventData={setEventData}
+                  setAddressSelected={setAddressSelected}
+                />
+              )}
             />
-          </Form.Group>
-          {errors?.starts_at?.map((message, idx) => (
-            <Alert variant="warning" key={idx}>
-              {message}
-            </Alert>
-          ))}
-          <Form.Group className="my-3">
-            <Form.Label>Ends at:</Form.Label>
-            <DateTimePicker
-              required
-              className="d-block"
-              onAccept={(e) => {
-                if (e) {
-                  setEventData({
-                    ...eventData,
-                    ends_at: e.format(),
-                  });
-                }
-              }}
+
+            <span>Selected Address: {address}</span>
+          </FormGroup>
+          <FormGroup>
+            <Controller
+              name="starts_at"
+              control={control}
+              rules={{ required: "Plase enter a start time and date" }}
+              render={({ field: { onChange, value } }) => (
+                <DateTimePicker
+                  disablePast
+                  label="Starts at"
+                  onAccept={(e) => {
+                    if (e) {
+                      setEventData({
+                        ...eventData,
+                        starts_at: e.format(),
+                      });
+                    }
+                  }}
+                />
+              )}
             />
-          </Form.Group>
-          {errors?.ends_at?.map((message, idx) => (
-            <Alert variant="warning" key={idx}>
-              {message}
-            </Alert>
-          ))}
-          <Button className="my-3" type="submit">
-            Create Event
-          </Button>
-        </Form>
+          </FormGroup>
+          {errors.starts_at && <span>{errors.starts_at.message}</span>}
+          <FormGroup>
+            <Controller
+              name="ends_at"
+              control={control}
+              rules={{ required: "Plase enter an end time and date" }}
+              render={({ field: { onChange, value } }) => (
+                <DateTimePicker
+                  label="Ends at"
+                  disablePast
+                  onAccept={(e) => {
+                    if (e) {
+                      setEventData({
+                        ...eventData,
+                        ends_at: e.format(),
+                      });
+                    }
+                  }}
+                />
+              )}
+            />
+          </FormGroup>
+          {errors.ends_at && <span>{errors.ends_at.message}</span>}
+          <Button type="submit">Create Event</Button>
+        </Box>
       </LocalizationProvider>
     </main>
   );
-};
-
-export default CreateEventForm;
+}
