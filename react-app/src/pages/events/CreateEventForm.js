@@ -1,5 +1,5 @@
 import { useForm, Controller } from "react-hook-form";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
-export default function FormExample() {
+export default function CreateEventForm() {
   const {
     control,
     handleSubmit,
@@ -98,47 +98,49 @@ export default function FormExample() {
           <FormGroup>
             <Controller
               name="starts_at"
+              label="Starts at"
               control={control}
-              rules={{ required: "Plase enter a start time and date" }}
-              render={({ field: { onChange, value } }) => (
+              rules={{ required: "Plase enter a start date" }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <DateTimePicker
-                  disablePast
-                  label="Starts at"
-                  onAccept={(e) => {
-                    if (e) {
-                      setEventData({
-                        ...eventData,
-                        starts_at: e.format(),
-                      });
-                    }
+                  value={value}
+                  onChange={onChange}
+                  slotProps={{
+                    textField: {
+                      helperText: error ? error.message : null,
+                      error: !!error,
+                    },
                   }}
                 />
               )}
             />
           </FormGroup>
-          {errors.starts_at && <span>{errors.starts_at.message}</span>}
           <FormGroup>
             <Controller
               name="ends_at"
+              label="Ends at"
               control={control}
-              rules={{ required: "Plase enter an end time and date" }}
-              render={({ field: { onChange, value } }) => (
+              rules={{ required: "Plase enter an end date" }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <DateTimePicker
-                  label="Ends at"
-                  disablePast
-                  onAccept={(e) => {
-                    if (e) {
-                      setEventData({
-                        ...eventData,
-                        ends_at: e.format(),
-                      });
-                    }
+                  value={value}
+                  onChange={onChange}
+                  slotProps={{
+                    textField: {
+                      helperText: error ? error.message : null,
+                      error: !!error,
+                    },
                   }}
                 />
               )}
             />
           </FormGroup>
-          {errors.ends_at && <span>{errors.ends_at.message}</span>}
           <Button type="submit">Create Event</Button>
         </Box>
       </LocalizationProvider>
