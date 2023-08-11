@@ -1,5 +1,5 @@
 import { useForm, Controller } from "react-hook-form";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
+import dayjs from "dayjs";
 export default function CreateEventForm() {
   const {
     control,
@@ -34,6 +35,7 @@ export default function CreateEventForm() {
     console.log(data);
     console.log(errors);
     console.log(touchedFields);
+    console.log(eventData);
   };
 
   return (
@@ -67,13 +69,9 @@ export default function CreateEventForm() {
               name="address"
               control={control}
               rules={{
-                validate: () => {
-                  if (addressSelected) {
-                    return true;
-                  } else {
-                    return "Please select a valid address from the dropdown";
-                  }
-                },
+                validate: () =>
+                  addressSelected ||
+                  "Please select a valid address from the dropdown",
               }}
               render={({
                 field: { onChange, value },
@@ -98,9 +96,12 @@ export default function CreateEventForm() {
           <FormGroup>
             <Controller
               name="starts_at"
-              label="Starts at"
               control={control}
-              rules={{ required: "Plase enter a start date" }}
+              rules={{
+                required: "please enter a start date/time",
+                validate: (value) =>
+                  value > dayjs() || "please enter a date/time in the future",
+              }}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -108,6 +109,8 @@ export default function CreateEventForm() {
                 <DateTimePicker
                   value={value}
                   onChange={onChange}
+                  disablePast
+                  label="Starts At"
                   slotProps={{
                     textField: {
                       helperText: error ? error.message : null,
@@ -121,9 +124,12 @@ export default function CreateEventForm() {
           <FormGroup>
             <Controller
               name="ends_at"
-              label="Ends at"
               control={control}
-              rules={{ required: "Plase enter an end date" }}
+              rules={{
+                required: "please enter an end date/time",
+                validate: (value) =>
+                  value > dayjs() || "please enter a date/time in the future",
+              }}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -131,6 +137,7 @@ export default function CreateEventForm() {
                 <DateTimePicker
                   value={value}
                   onChange={onChange}
+                  label="Ends at"
                   slotProps={{
                     textField: {
                       helperText: error ? error.message : null,
