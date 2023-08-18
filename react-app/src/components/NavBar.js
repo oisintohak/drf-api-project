@@ -1,17 +1,21 @@
-import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
+import { AppBar, ListItemIcon, Toolbar, Typography } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import IconButton from "@mui/material/IconButton";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import Logout from "@mui/icons-material/Logout";
+import Link from "@mui/material/Link";
 import {
   useCurrentUser,
   useSetCurrentUser,
 } from "../contexts/CurrentUserContext";
 import { axiosReq } from "../api/axiosDefaults";
-import ProfileImage from "./ProfileImage";
 
-function NavBar() {
-  const currentUser = useCurrentUser();
-  const setCurrentUser = useSetCurrentUser();
-
+const NavBar = () => {
   const handleLogout = async () => {
     try {
       await axiosReq.post("auth/logout/");
@@ -20,39 +24,109 @@ function NavBar() {
       console.log(err);
     }
   };
+  const currentUser = useCurrentUser();
+  const setCurrentUser = useSetCurrentUser();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
-    <Navbar expand="md">
-      <Container>
-        <NavLink to="/">
-          <Navbar.Brand>Eventually</Navbar.Brand>
-        </NavLink>
-        <Navbar.Toggle />
-        <Navbar.Collapse className="justify-content-end">
-          {currentUser ? (
-            <>
-              <NavLink to="/create-event" className="mx-2">
-                Create Event
-              </NavLink>
-              <NavLink to="/" onClick={handleLogout} className="mx-2">
-                Logout
-              </NavLink>
-            </>
-          ) : (
-            <>
-              <NavLink to="/login" className="mx-2">
-                Login
-              </NavLink>
-              <NavLink to="/register" className="mx-2">
-                Register
-              </NavLink>
-            </>
-          )}
-        </Navbar.Collapse>
-        <Navbar.Text>{currentUser?.username}</Navbar.Text>
-        <ProfileImage src={currentUser?.profile_image} />
-      </Container>
-    </Navbar>
+    <AppBar position="sticky">
+      <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Typography variant="h5">Eventually</Typography>
+        {/* <NavMenu /> */}
+        <>
+          <Box
+            sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
+          >
+            <IconButton
+              onClick={handleClick}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-controls={open ? "account-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+            >
+              <Avatar
+                src={currentUser?.profile_image}
+                sx={{ width: 32, height: 32 }}
+              ></Avatar>
+            </IconButton>
+          </Box>
+          <Menu
+            anchorEl={anchorEl}
+            id="account-menu"
+            open={open}
+            onClose={handleClose}
+            onClick={handleClose}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            {currentUser ? (
+              <div>
+                <Link
+                  to="/create-event"
+                  component={NavLink}
+                  sx={{ textDecoration: "none" }}
+                  color="primary"
+                >
+                  <MenuItem onClick={handleClose}>
+                    <ListItemIcon>
+                      <AddBoxIcon />
+                    </ListItemIcon>
+                    Create Event
+                  </MenuItem>
+                </Link>
+                <Link
+                  to="/"
+                  component={NavLink}
+                  sx={{ textDecoration: "none" }}
+                  onClick={handleLogout}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                </Link>
+              </div>
+            ) : (
+              <div>
+                <NavLink to="/login">
+                  <MenuItem
+                    onClick={handleClose}
+                    sx={{ textDecoration: "none" }}
+                  >
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    Login
+                  </MenuItem>
+                </NavLink>
+                <NavLink to="/register">
+                  <MenuItem
+                    onClick={handleClose}
+                    sx={{ textDecoration: "none" }}
+                  >
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    Register
+                  </MenuItem>
+                </NavLink>
+              </div>
+            )}
+          </Menu>
+        </>
+      </Toolbar>
+    </AppBar>
   );
-}
+};
 
 export default NavBar;
