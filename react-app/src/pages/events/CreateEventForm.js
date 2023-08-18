@@ -9,33 +9,46 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
 import dayjs from "dayjs";
+import { useHistory } from "react-router-dom";
+import { axiosReq } from "../../api/axiosDefaults";
+import { Typography } from "@mui/material";
 export default function CreateEventForm() {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, touchedFields },
-    setValue,
-    trigger,
-  } = useForm({
+  const history = useHistory();
+  const { control, handleSubmit, setValue, trigger } = useForm({
     defaultValues: { title: "", address: "", starts_at: "", ends_at: "" },
   });
   const [addressSelected, setAddressSelected] = useState(false);
-
+  const [apiErrors, setApiErrors] = useState({});
   const [eventData, setEventData] = useState({
-    title: "",
-    starts_at: "",
-    ends_at: "",
     lat: "",
     long: "",
     address: "",
     place_id: "",
   });
   const { address } = eventData;
-  const onSubmit = (data) => {
-    console.log(data);
-    console.log(errors);
-    console.log(touchedFields);
-    console.log(eventData);
+
+  const onSubmit = async (submitData) => {
+    const formData = new FormData();
+    for (const [key, value] of Object.entries({
+      ...submitData,
+      ...eventData,
+    })) {
+      if (key === "starts_at" || key === "ends_at") {
+        formData.append(key, value.format());
+      } else {
+        formData.append(key, value);
+      }
+    }
+    try {
+      const { data } = await axiosReq.post("/events/", formData);
+      history.push(`/events/${data.id}`);
+    } catch (err) {
+      console.log(err);
+      if (err.response?.status !== 401) {
+        setApiErrors(err.response?.data);
+        console.log(apiErrors);
+      }
+    }
   };
 
   return (
@@ -46,7 +59,7 @@ export default function CreateEventForm() {
           <Controller
             name="title"
             control={control}
-            rules={{ required: "Plase enter a title" }}
+            rules={{ required: "Please enter a title" }}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <TextField
                 helperText={error ? error.message : null}
@@ -90,7 +103,6 @@ export default function CreateEventForm() {
                 />
               )}
             />
-
             <span>Selected Address: {address}</span>
           </FormGroup>
           <FormGroup>
@@ -150,6 +162,9 @@ export default function CreateEventForm() {
           </FormGroup>
           <Button type="submit">Create Event</Button>
         </Box>
+        <Typography variant="body1" color="error">
+          {apiErrors && <span>{apiErrors.address}</span>}
+        </Typography>
       </LocalizationProvider>
     </main>
   );

@@ -18,6 +18,9 @@ class EventSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'starts_at',
             'ends_at', 'lat', 'long', 'address', 'place_id',
-            'created_at', 'updated_at', 'is_creator', 'created_by',
+            'created_at', 'updated_at', 'is_creator',
             'profile_id', 'profile_image', 'creator_username'
+        ]
+        optional_fields = [
+            'created_by'
         ]
