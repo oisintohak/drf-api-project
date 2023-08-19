@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from .views import Index
 from django.urls import re_path
 
 urlpatterns = [
@@ -12,5 +13,5 @@ urlpatterns = [
     path('profiles/', include('profiles.urls')),
     path('events/', include('events.urls')),
     # path('', TemplateView.as_view(template_name='index.html')),
-    re_path(r'.*', TemplateView.as_view(template_name='index.html'))  # only if the above routes don't trigger a match
+    re_path(r'.*', Index.as_view())
 ]
