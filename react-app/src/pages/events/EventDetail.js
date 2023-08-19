@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Event from "../../components/Event";
 import { useParams } from "react-router";
 import { axiosReq } from "../../api/axiosDefaults";
+import { Box, Container } from "@mui/material";
 
 const EventDetail = () => {
   const { id } = useParams();
@@ -20,7 +21,9 @@ const EventDetail = () => {
     fetchEvents();
   }, [id]);
   return (
-    <div>{loaded ? <Event {...event}></Event> : <span>loading...</span>}</div>
+    <Box p={3} m={3}>
+      {loaded ? <Event {...event}></Event> : <span>loading...</span>}
+    </Box>
   );
 };
 

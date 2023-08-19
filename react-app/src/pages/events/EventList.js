@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { axiosReq } from "../../api/axiosDefaults";
 import Event from "../../components/Event";
-import { Link } from "react-router-dom";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Grid, Skeleton } from "@mui/material";
+import EventSkeleton from "./EventSkeleton";
 
 const EventList = () => {
   const [events, setEvents] = useState({ results: [] });
@@ -22,25 +21,35 @@ const EventList = () => {
   }, []);
 
   return (
-    <div>
+    <>
       {loaded ? (
-        <>
-          {events.results?.length ? (
-            <Row>
-              {events.results.map((event) => (
-                <Col className="my-3" md={6} xl={4} key={event.id}>
-                  <Event {...event} eventlist />
-                </Col>
-              ))}
-            </Row>
-          ) : (
-            <>no events</>
-          )}
-        </>
+        <Grid container spacing={3} p={3}>
+          {events.results.map((event) => (
+            <Grid item xs={12} md={6} xl={4} key={event.id}>
+              <Event {...event} eventlist />
+            </Grid>
+          ))}
+        </Grid>
       ) : (
-        <span>loading...</span>
+        <Grid container justifyContent="center" spacing={3} p={3}>
+          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+            <EventSkeleton />
+          </Grid>
+          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+            <EventSkeleton />
+          </Grid>
+          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+            <EventSkeleton />
+          </Grid>
+          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+            <EventSkeleton />
+          </Grid>
+          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+            <EventSkeleton />
+          </Grid>
+        </Grid>
       )}
-    </div>
+    </>
   );
 };
 

@@ -1,28 +1,15 @@
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import { Link } from "react-router-dom";
-import ListGroup from "react-bootstrap/ListGroup";
-import ProfileImage from "./ProfileImage";
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { Avatar, CardHeader, Divider, Stack } from "@mui/material";
+import Link from "@mui/material/Link";
+import { NavLink } from "react-router-dom";
 
-const card1 = (
-  <Card>
-    <Card.Body>
-      <Card.Title>Card Title</Card.Title>
-      <Card.Text></Card.Text>
-    </Card.Body>
-    <ListGroup className="list-group-flush">
-      <ListGroup.Item>Cras justo odio</ListGroup.Item>
-      <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-      <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
-    </ListGroup>
-    <Card.Body>
-      <Card.Link href="#">Card Link</Card.Link>
-      <Card.Link href="#">Another Link</Card.Link>
-    </Card.Body>
-  </Card>
-);
-
-function Event(props) {
+const Event = (props) => {
   const {
     id,
     creator_username,
@@ -36,45 +23,48 @@ function Event(props) {
     eventlist,
     profile_image,
   } = props;
+  return (
+    <Card
+      variant="outlined"
+      sx={{ maxWidth: "20rem", minWidth: "20rem", m: 2 }}
+    >
+      <CardHeader
+        avatar={<Avatar src={profile_image} />}
+        title={
+          <Typography variant="h5" color="text.secondary" gutterBottom>
+            {title}
+          </Typography>
+        }
+        subheader={
+          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+            {creator_username}
+          </Typography>
+        }
+      />
+      <CardContent>
+        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          {address}
+        </Typography>
+        <Stack
+          direction="row"
+          divider={<Divider orientation="vertical" flexItem />}
+          spacing={2}
+        >
+          <Typography variant="body2">{ends_at}</Typography>
+          <Typography variant="body2">{starts_at}</Typography>
+        </Stack>
+      </CardContent>
+      <CardActions>
+        <Link to={`/events/${id}`} component={NavLink} color="secondary">
+          <Button size="small">Learn More</Button>
+        </Link>
+      </CardActions>
 
-  const card = (
-    <Card>
-      <Card.Img variant="top" src="" />
-      <Card.Body>
-        {title && (
-          <>
-            <Card.Title>{title}</Card.Title>
-            {creator_username && (
-              <span>
-                Created by:
-                <ProfileImage src={profile_image} /> {creator_username}
-              </span>
-            )}
-          </>
-        )}
-      </Card.Body>
-      <ListGroup className="list-group-flush">
-        {starts_at && <ListGroup.Item>Starts at: {starts_at}</ListGroup.Item>}
-        {ends_at && <ListGroup.Item>Ends at: {ends_at}</ListGroup.Item>}
-        {address && <ListGroup.Item>Address: {address}</ListGroup.Item>}
-        {created_at && <ListGroup.Item>Created: {created_at}</ListGroup.Item>}
-        {updated_at && <ListGroup.Item>Updated: {updated_at}</ListGroup.Item>}
-      </ListGroup>
-      <Button>Details</Button>
+      {/* <Link to="/" component={NavLink} color="secondary">
+          Learn More..
+        </Link> */}
     </Card>
   );
-
-  return (
-    <div>
-      {eventlist ? (
-        <Link key={id} to={`/events/${id}`}>
-          {card}
-        </Link>
-      ) : (
-        card
-      )}
-    </div>
-  );
-}
+};
 
 export default Event;

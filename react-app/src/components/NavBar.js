@@ -38,8 +38,21 @@ const NavBar = () => {
   return (
     <AppBar position="sticky">
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Typography variant="h5">Eventually</Typography>
-        {/* <NavMenu /> */}
+        <Link
+          to="/"
+          component={NavLink}
+          sx={{
+            textDecoration: "none",
+            color: "white",
+            "&:hover": {
+              color: "white",
+            },
+          }}
+          color="secondary"
+        >
+          <Typography variant="h5">Eventually</Typography>
+        </Link>
+
         <>
           <Box
             sx={{ display: "flex", alignItems: "center", textAlign: "center" }}

@@ -15,7 +15,9 @@ const GoogleMapsAutocomplete = (props) => {
   } = props;
 
   const { ref: inputRef } = usePlacesWidget({
-    apiKey: process.env.REACT_APP_GMAPS_API_KEY,
+    apiKey: process.env.REACT_APP_GMAPS_API_KEY
+      ? process.env.REACT_APP_GMAPS_API_KEY
+      : window.REACT_APP_GMAPS_API_KEY,
     onPlaceSelected: (place) => {
       setAddressSelected(true);
       setValue("address", place.formatted_address); // set the address field value for react-hook-form
