@@ -5,7 +5,6 @@ import LoginForm from "./pages/auth/Login";
 import EventList from "./pages/events/EventList";
 import CreateEventForm from "./pages/events/CreateEventForm";
 import EventDetail from "./pages/events/EventDetail";
-import Container from "react-bootstrap/Container";
 import { CssBaseline } from "@mui/material";
 
 function App() {

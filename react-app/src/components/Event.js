@@ -24,10 +24,7 @@ const Event = (props) => {
     profile_image,
   } = props;
   return (
-    <Card
-      variant="outlined"
-      sx={{ maxWidth: "20rem", minWidth: "20rem", m: 2 }}
-    >
+    <Card sx={{ maxWidth: "20rem", m: 2 }}>
       <CardHeader
         avatar={<Avatar src={profile_image} />}
         title={
@@ -59,10 +56,6 @@ const Event = (props) => {
           <Button size="small">Learn More</Button>
         </Link>
       </CardActions>
-
-      {/* <Link to="/" component={NavLink} color="secondary">
-          Learn More..
-        </Link> */}
     </Card>
   );
 };

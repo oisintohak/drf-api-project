@@ -25,26 +25,63 @@ const EventList = () => {
       {loaded ? (
         <Grid container spacing={3} p={3}>
           {events.results.map((event) => (
-            <Grid item xs={12} md={6} xl={4} key={event.id}>
+            <Grid
+              item
+              sx={{ display: "flex", justifyContent: "center" }}
+              xs={12}
+              md={6}
+              xl={4}
+              key={event.id}
+            >
               <Event {...event} eventlist />
             </Grid>
           ))}
         </Grid>
       ) : (
         <Grid container justifyContent="center" spacing={3} p={3}>
-          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+          <Grid
+            sx={{ display: "flex", justifyContent: "center" }}
+            item
+            xs={12}
+            md={6}
+            xl={4}
+          >
             <EventSkeleton />
           </Grid>
-          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+          <Grid
+            sx={{ display: "flex", justifyContent: "center" }}
+            item
+            xs={12}
+            md={6}
+            xl={4}
+          >
             <EventSkeleton />
           </Grid>
-          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+          <Grid
+            sx={{ display: "flex", justifyContent: "center" }}
+            item
+            xs={12}
+            md={6}
+            xl={4}
+          >
             <EventSkeleton />
           </Grid>
-          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+          <Grid
+            sx={{ display: "flex", justifyContent: "center" }}
+            item
+            xs={12}
+            md={6}
+            xl={4}
+          >
             <EventSkeleton />
           </Grid>
-          <Grid sx={{ display: "flex", justifyContent:"center",  }} item xs={12} md={6} xl={4}>
+          <Grid
+            sx={{ display: "flex", justifyContent: "center" }}
+            item
+            xs={12}
+            md={6}
+            xl={4}
+          >
             <EventSkeleton />
           </Grid>
         </Grid>
