@@ -4,14 +4,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import FormGroup from "@mui/material/FormGroup";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
 import dayjs from "dayjs";
 import { useHistory } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
-import { Typography } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 export default function CreateEventForm() {
   const history = useHistory();
   const { control, handleSubmit, setValue, trigger } = useForm({
@@ -52,10 +51,16 @@ export default function CreateEventForm() {
   };
 
   return (
-    <main>
-      <h1>Create a new event:</h1>
+    <Container>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Box onSubmit={handleSubmit(onSubmit)} component="form" noValidate>
+        <Stack
+          spacing={3}
+          onSubmit={handleSubmit(onSubmit)}
+          component="form"
+          noValidate
+          py={3}
+        >
+          <Typography variant="h3">Create a new event:</Typography>
           <Controller
             name="title"
             control={control}
@@ -74,10 +79,6 @@ export default function CreateEventForm() {
             )}
           />
           <FormGroup>
-            <label>
-              Address (search for an address and select a valid address from the
-              dropdown):
-            </label>
             <Controller
               name="address"
               control={control}
@@ -91,7 +92,11 @@ export default function CreateEventForm() {
                 fieldState: { error },
               }) => (
                 <GoogleMapsAutocomplete
-                  helperText={error ? error.message : null}
+                  helperText={
+                    error
+                      ? error.message
+                      : "Please search for an address and select a valid address from the dropdown"
+                  }
                   size="small"
                   error={!!error}
                   onChange={onChange}
@@ -103,7 +108,9 @@ export default function CreateEventForm() {
                 />
               )}
             />
-            <span>Selected Address: {address}</span>
+            <Typography variant="caption">
+              Selected Address: {address}
+            </Typography>
           </FormGroup>
           <FormGroup>
             <Controller
@@ -149,6 +156,7 @@ export default function CreateEventForm() {
                 <DateTimePicker
                   value={value}
                   onChange={onChange}
+                  disablePast
                   label="Ends at"
                   slotProps={{
                     textField: {
@@ -160,12 +168,14 @@ export default function CreateEventForm() {
               )}
             />
           </FormGroup>
-          <Button type="submit">Create Event</Button>
-        </Box>
-        <Typography variant="body1" color="error">
-          {apiErrors && <span>{apiErrors.address}</span>}
-        </Typography>
+        <Button variant="contained" sx={{ width:"fit-content", alignSelf:"center"  }} type="submit" >Create Event</Button>
+        </Stack>
+        {apiErrors.address && (
+          <Typography variant="body1" color="error">
+            {apiErrors.address}
+          </Typography>
+        )}
       </LocalizationProvider>
-    </main>
+    </Container>
   );
 }
