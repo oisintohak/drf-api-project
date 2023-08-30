@@ -9,7 +9,7 @@ const EventMap = () => {
   const [events, setEvents] = useState({ results: [] });
   const [loaded, setLoaded] = useState(false);
   const mapRef = useRef();
-  const [bounds, setBounds] = useState(null);
+  const [mapBounds, setMapBounds] = useState(null);
   const [zoom, setZoom] = useState(10);
   const [points, setPoints] = useState([]);
 
@@ -18,7 +18,10 @@ const EventMap = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const { data } = await axiosReq.get("/events/");
+        // const { data } = await axiosReq.get(`/events/`);
+        const { data } = await axiosReq.get(
+          `/events/?min_lat=${mapBounds[1]}&max_lat=${mapBounds[3]}&min_long=${mapBounds[0]}&max_long=${mapBounds[2]}`
+        );
         setEvents(data);
         setLoaded(true);
         setPoints(
@@ -37,12 +40,12 @@ const EventMap = () => {
       }
     };
     fetchEvents();
-  }, []);
+  }, [mapBounds]);
 
   const { clusters, supercluster } = useSupercluster({
     points,
-    bounds,
     zoom,
+    bounds: mapBounds,
     options: { radius: 30, maxZoom: 100 },
   });
 
@@ -62,7 +65,7 @@ const EventMap = () => {
         }}
         onChange={({ zoom, bounds }) => {
           setZoom(zoom);
-          setBounds([
+          setMapBounds([
             bounds.nw.lng,
             bounds.se.lat,
             bounds.se.lng,
