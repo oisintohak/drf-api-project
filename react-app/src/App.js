@@ -6,6 +6,7 @@ import EventList from "./pages/events/EventList";
 import CreateEventForm from "./pages/events/CreateEventForm";
 import EventDetail from "./pages/events/EventDetail";
 import { CssBaseline } from "@mui/material";
+import EventMap from "./pages/events/EventMap";
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <CssBaseline />
       <NavBar />
       <Switch>
-        <Route exact path="/" render={() => <EventList />} />
+        <Route exact path="/" render={() => <EventMap />} />
         <Route exact path="/login" render={() => <LoginForm />} />
         <Route exact path="/register" render={() => <RegisterForm />} />
         <Route exact path="/events/:id" render={() => <EventDetail />} />
