@@ -112,6 +112,7 @@ export default function CreateEventForm() {
               Selected Address: {address}
             </Typography>
           </FormGroup>
+
           <FormGroup>
             <Controller
               name="starts_at"
@@ -168,7 +169,13 @@ export default function CreateEventForm() {
               )}
             />
           </FormGroup>
-        <Button variant="contained" sx={{ width:"fit-content", alignSelf:"center"  }} type="submit" >Create Event</Button>
+          <Button
+            variant="contained"
+            sx={{ width: "fit-content", alignSelf: "center" }}
+            type="submit"
+          >
+            Create Event
+          </Button>
         </Stack>
         {apiErrors.address && (
           <Typography variant="body1" color="error">
