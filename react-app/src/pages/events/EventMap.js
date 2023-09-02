@@ -4,6 +4,7 @@ import GoogleMapReact from "google-map-react";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import useSupercluster from "use-supercluster";
 import PlaceIcon from "@mui/icons-material/Place";
+import MapMarkerPopup from "./MapMarkerPopup";
 
 const EventMap = () => {
   const [loaded, setLoaded] = useState(false);
@@ -19,7 +20,7 @@ const EventMap = () => {
       if (mapBounds.length) {
         try {
           // const { data } = await axiosReq.get(`/events/`);
-          console.log(mapBounds)
+          console.log(mapBounds);
           const { data } = await axiosReq.get(
             `/events/?min_lat=${mapBounds[1]}&max_lat=${mapBounds[3]}&min_long=${mapBounds[0]}&max_long=${mapBounds[2]}`
           );
@@ -27,7 +28,10 @@ const EventMap = () => {
           setPoints(
             data.results.map((event) => ({
               type: "Feature",
-              properties: { cluster: false, id: event.id, title: event.title },
+              properties: {
+                cluster: false,
+                ...event,
+              },
               geometry: {
                 type: "Point",
                 coordinates: [parseFloat(event.long), parseFloat(event.lat)],
@@ -50,7 +54,7 @@ const EventMap = () => {
   });
 
   return (
-    <div style={{ height: "80vh", width: "100%" }}>
+    <div style={{ height:"85vh", width: "100%" }}>
       <GoogleMapReact
         bootstrapURLKeys={{
           key: process.env.REACT_APP_GMAPS_API_KEY
@@ -70,11 +74,10 @@ const EventMap = () => {
           //   bounds[0],
           //   bounds[1],
           // ])
-
         }}
         onChange={({ zoom, bounds }) => {
           setZoom(zoom);
-          console.log(`zoom:`, zoom)
+          console.log(`zoom:`, zoom);
           setMapBounds([
             bounds.nw.lng,
             bounds.se.lat,
@@ -95,14 +98,15 @@ const EventMap = () => {
                 lat={latitude}
                 lng={longitude}
               >
-                <Box
+                <Button
+                  variant="contained"
+                  className="cluster-marker"
                   sx={{
-                    backgroundColor: "white",
-                    color: "red",
-                    width: `${10 + (pointCount / points.length) * 20}px`,
-                    height: `${10 + (pointCount / points.length) * 20}px`,
+                    padding: 0,
+                    margin: 0,
+                    width: `${60 + (pointCount / points.length) * 35}px`,
+                    height: `${60 + (pointCount / points.length) * 35}px`,
                     borderRadius: "100%",
-                    padding: "20px",
                   }}
                   onClick={() => {
                     const expansionZoom = Math.min(
@@ -114,20 +118,18 @@ const EventMap = () => {
                   }}
                 >
                   {pointCount}
-                </Box>
+                </Button>
               </Marker>
             );
           }
 
           return (
             <Marker
-              key={`crime-${cluster.properties.id}`}
+              key={`event-${cluster.properties.id}`}
               lat={latitude}
               lng={longitude}
             >
-              <IconButton size="large" sx={{ color: "red" }}>
-                <PlaceIcon size="large" />
-              </IconButton>
+              <MapMarkerPopup {...cluster.properties} />
             </Marker>
           );
         })}

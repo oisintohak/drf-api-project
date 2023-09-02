@@ -5,12 +5,12 @@ import LoginForm from "./pages/auth/Login";
 import EventList from "./pages/events/EventList";
 import CreateEventForm from "./pages/events/CreateEventForm";
 import EventDetail from "./pages/events/EventDetail";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, Stack } from "@mui/material";
 import EventMap from "./pages/events/EventMap";
 
 function App() {
   return (
-    <div>
+    <Stack>
       <CssBaseline />
       <NavBar />
       <Switch>
@@ -21,7 +21,7 @@ function App() {
         <Route exact path="/events/" render={() => <EventList />} />
         <Route exact path="/create-event" render={() => <CreateEventForm />} />
       </Switch>
-    </div>
+    </Stack>
   );
 }
 

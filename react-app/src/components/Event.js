@@ -24,7 +24,7 @@ const Event = (props) => {
     profile_image,
   } = props;
   return (
-    <Card sx={{ maxWidth: "20rem", m: 2 }}>
+    <Card sx={{ maxWidth: "20rem" }}>
       <CardHeader
         avatar={<Avatar src={profile_image} />}
         title={
