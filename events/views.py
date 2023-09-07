@@ -1,5 +1,6 @@
 from django.db.models import Count
-from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter
+from django_filters.rest_framework import (
+    DjangoFilterBackend, FilterSet, NumberFilter, DateFilter)
 from rest_framework import filters, generics
 from rest_framework.pagination import LimitOffsetPagination
 
@@ -14,6 +15,12 @@ class EventFilter(FilterSet):
     max_lat = NumberFilter(field_name='lat', lookup_expr='lte')
     min_long = NumberFilter(field_name='long', lookup_expr='gte')
     max_long = NumberFilter(field_name='long', lookup_expr='lte')
+    starts_after = DateFilter(
+        field_name='starts_at', lookup_expr='date__gte')
+    starts_before = DateFilter(
+        field_name='starts_at', lookup_expr='date__lte')
+    ends_after = DateFilter(field_name='ends_at', lookup_expr='date__gte')
+    ends_before = DateFilter(field_name='ends_at', lookup_expr='date__lte')
 
     class Meta:
         model = Event

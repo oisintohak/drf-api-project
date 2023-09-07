@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { axiosReq } from "../../api/axiosDefaults";
 import GoogleMapReact from "google-map-react";
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import useSupercluster from "use-supercluster";
-import PlaceIcon from "@mui/icons-material/Place";
 import MapMarkerPopup from "./MapMarkerPopup";
+import FilterMenu from "./FilterMenu";
 
 const EventMap = () => {
   const [loaded, setLoaded] = useState(false);
@@ -12,6 +12,12 @@ const EventMap = () => {
   const [mapBounds, setMapBounds] = useState([]);
   const [zoom, setZoom] = useState(10);
   const [points, setPoints] = useState([]);
+  const [dateFilters, setDateFilters] = useState({
+    starts_after: null,
+    ends_after: null,
+    starts_before: null,
+    ends_before: null,
+  });
 
   const Marker = ({ children }) => children;
 
@@ -21,9 +27,13 @@ const EventMap = () => {
         try {
           // const { data } = await axiosReq.get(`/events/`);
           console.log(mapBounds);
-          const { data } = await axiosReq.get(
-            `/events/?min_lat=${mapBounds[1]}&max_lat=${mapBounds[3]}&min_long=${mapBounds[0]}&max_long=${mapBounds[2]}`
-          );
+          let url = `/events/?min_lat=${mapBounds[1]}&max_lat=${mapBounds[3]}&min_long=${mapBounds[0]}&max_long=${mapBounds[2]}`;
+          for (let item in dateFilters) {
+            if (dateFilters[item]) {
+              url += `&${item}=${dateFilters[item].format("YYYY-MM-DD")}`;
+            }
+          }
+          const { data } = await axiosReq.get(url);
           setLoaded(true);
           setPoints(
             data.results.map((event) => ({
@@ -45,7 +55,7 @@ const EventMap = () => {
       }
     };
     fetchEvents();
-  }, [mapBounds]);
+  }, [mapBounds, dateFilters]);
   const { clusters, supercluster } = useSupercluster({
     points,
     zoom,
@@ -54,7 +64,10 @@ const EventMap = () => {
   });
 
   return (
-    <div style={{ height:"85vh", width: "100%" }}>
+    <div style={{ height: "85vh", width: "100%" }}>
+      <div>
+        <FilterMenu dateFilters={dateFilters} setDateFilters={setDateFilters} />
+      </div>
       <GoogleMapReact
         bootstrapURLKeys={{
           key: process.env.REACT_APP_GMAPS_API_KEY
@@ -68,6 +81,7 @@ const EventMap = () => {
           mapRef.current = map;
           // console.log(map.getBounds().toJSON())
           // let bounds = map.getBounds().toJSON()
+          // // set mapBounds to initial map bounds:
           // setMapBounds([
           //   bounds[3],
           //   bounds[2],

@@ -1,15 +1,11 @@
+// Popper with ClickAwayListener adapted from: https://mui.com/material-ui/react-menu/#menulist-composition
 import PlaceIcon from "@mui/icons-material/Place";
-import Button from "@mui/material/Button";
-import * as React from "react";
-
 import { IconButton } from "@mui/material";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
 import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
-import Stack from "@mui/material/Stack";
+import * as React from "react";
 import Event from "../../components/Event";
 
 const MapMarkerPopup = (props) => {
@@ -27,15 +23,6 @@ const MapMarkerPopup = (props) => {
 
     setOpen(false);
   };
-
-  function handleListKeyDown(event) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen(false);
-    } else if (event.key === "Escape") {
-      setOpen(false);
-    }
-  }
 
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open);
