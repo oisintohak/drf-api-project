@@ -24,8 +24,8 @@ const GoogleMapsAutocomplete = (props) => {
       trigger("address"); //trigger input validation
       setEventData((prevEventData) => ({
         ...prevEventData,
-        lat: place.geometry.location.lat(),
-        long: place.geometry.location.lng(),
+        lat: place.geometry.location.lat().toString().slice(0,12),
+        long: place.geometry.location.lng().toString().slice(0,12),
         address: place.formatted_address,
         place_id: place.place_id,
       }));
