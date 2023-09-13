@@ -7,8 +7,8 @@ class Event(models.Model):
     title = models.CharField(max_length=400)
     starts_at = models.DateTimeField()
     ends_at = models.DateTimeField()
-    lat = models.DecimalField(max_digits=10, decimal_places=8)
-    long = models.DecimalField(max_digits=10, decimal_places=8)
+    lat = models.DecimalField(max_digits=14, decimal_places=10)
+    long = models.DecimalField(max_digits=14, decimal_places=10)
     address = models.CharField(max_length=400)
     place_id = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -16,8 +16,8 @@ class Event(models.Model):
 
     def __str__(self):
         return (f'Event title: {self.title}. '
-                f'Starts: {self.starts_at.strftime("%H:%M:%S on %m/%d/%Y")}.'
-                f'Ends: {self.ends_at.strftime("%H:%M:%S on %m/%d/%Y")}')
+                f'Starts: {self.starts_at.strftime("%H:%M:%S on %d/%m/%Y")}.'
+                f'Ends: {self.ends_at.strftime("%H:%M:%S on %d/%m/%Y")}')
 
 
 class EventAdmin(models.Model):
@@ -53,9 +53,9 @@ class SubEvent(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return (f'Event title: {self.title}. '
-                f'Starts: {self.starts_at.strftime("%H:%M:%S on %m/%d/%Y")}.'
-                f'Ends: {self.ends_at.strftime("%H:%M:%S on %m/%d/%Y")}')
+        return (f'SubEvent title: {self.title}. '
+                f'Starts: {self.starts_at.strftime("%H:%M:%S on %d/%m/%Y")}.'
+                f'Ends: {self.ends_at.strftime("%H:%M:%S on %d/%m/%Y")}')
 
 
 class SubEventAdmin(models.Model):

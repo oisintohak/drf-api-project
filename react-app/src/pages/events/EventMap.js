@@ -7,7 +7,6 @@ import MapMarkerPopup from "./MapMarkerPopup";
 import FilterMenu from "./FilterMenu";
 
 const EventMap = () => {
-  const [loaded, setLoaded] = useState(false);
   const mapRef = useRef();
   const [mapBounds, setMapBounds] = useState([]);
   const [zoom, setZoom] = useState(10);
@@ -34,7 +33,6 @@ const EventMap = () => {
             }
           }
           const { data } = await axiosReq.get(url);
-          setLoaded(true);
           setPoints(
             data.results.map((event) => ({
               type: "Feature",

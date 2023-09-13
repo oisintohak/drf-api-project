@@ -1,6 +1,8 @@
-from django.db.models import Count
-from django_filters.rest_framework import (
-    DjangoFilterBackend, FilterSet, NumberFilter, DateFilter)
+from django.db.models import (BooleanField, Case, Count, ExpressionWrapper, F,
+                              Q, When)
+from django.db.models.functions import Now
+from django_filters.rest_framework import (DateFilter, DjangoFilterBackend,
+                                           FilterSet, NumberFilter)
 from rest_framework import filters, generics
 from rest_framework.pagination import LimitOffsetPagination
 
@@ -32,7 +34,18 @@ class Paginator(LimitOffsetPagination):
 
 
 class EventList(generics.ListCreateAPIView):
-    queryset = Event.objects.all()
+    # https://www.reddit.com/r/django/comments/jr3ekq/f_objects_comparing_a_field_to_the_current_time/
+    queryset = Event.objects.annotate(
+        is_over=Case(
+            When(
+                Q(ends_at__lt=Now()),
+                then=True
+            ),
+            default=False,
+            output_field=BooleanField()
+        )
+    )
+
     serializer_class = EventSerializer
     pagination_class = Paginator
     filter_backends = [
@@ -44,7 +57,7 @@ class EventList(generics.ListCreateAPIView):
         serializer.save(created_by=self.request.user)
 
 
-class EventDetail(generics.RetrieveUpdateAPIView):
+class EventDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Event.objects.all()
     permission_classes = [IsCreatorOrReadOnly]
