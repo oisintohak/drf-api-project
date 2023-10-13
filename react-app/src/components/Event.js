@@ -22,6 +22,8 @@ const Event = (props) => {
     is_creator,
     eventlist,
     profile_image,
+    isDetail,
+    showEdit,
   } = props;
   return (
     <Card sx={{ maxWidth: "20rem" }}>
@@ -47,14 +49,21 @@ const Event = (props) => {
           divider={<Divider orientation="vertical" flexItem />}
           spacing={2}
         >
-          <Typography variant="body2">{ends_at}</Typography>
-          <Typography variant="body2">{starts_at}</Typography>
+          <Typography variant="body2">Starts at:{starts_at}</Typography>
+          <Typography variant="body2">Ends at:{ends_at}</Typography>
         </Stack>
       </CardContent>
       <CardActions>
-        <Link to={`/events/${id}`} component={NavLink} color="secondary">
-          <Button size="small">Learn More</Button>
-        </Link>
+        {!isDetail && (
+          <Link to={`/events/${id}`} component={NavLink} color="secondary">
+            <Button size="small">Learn More</Button>
+          </Link>
+        )}
+        {showEdit && (
+          <Link to={`/events/${id}/edit`} component={NavLink} color="secondary">
+            <Button size="small">Edit</Button>
+          </Link>
+        )}
       </CardActions>
     </Card>
   );

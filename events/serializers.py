@@ -10,8 +10,10 @@ class EventSerializer(serializers.ModelSerializer):
     profile_image = serializers.ReadOnlyField(source="created_by.profile.image.url")
     creator_username = serializers.ReadOnlyField(source="created_by.username")
     is_over = serializers.BooleanField(read_only=True)
-    starts_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
-    ends_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
+    starts_at = serializers.DateTimeField()
+    ends_at = serializers.DateTimeField()
+    # starts_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
+    # ends_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
 
     def get_is_creator(self, obj):
         request = self.context["request"]

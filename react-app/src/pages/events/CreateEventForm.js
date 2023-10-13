@@ -18,21 +18,22 @@ export default function CreateEventForm() {
   });
   const [addressSelected, setAddressSelected] = useState(false);
   const [apiErrors, setApiErrors] = useState({});
-  const [eventData, setEventData] = useState({
+  const [addressData, setAddressData] = useState({
     lat: "",
     long: "",
     address: "",
     place_id: "",
   });
-  const { address } = eventData;
+  const { address } = addressData;
 
   const onSubmit = async (submitData) => {
     const formData = new FormData();
     for (const [key, value] of Object.entries({
       ...submitData,
-      ...eventData,
+      ...addressData,
     })) {
       if (key === "starts_at" || key === "ends_at") {
+        console.log(key, value.format())
         formData.append(key, value.format());
       } else {
         formData.append(key, value);
@@ -103,7 +104,7 @@ export default function CreateEventForm() {
                   value={value}
                   setValue={setValue}
                   trigger={trigger}
-                  setEventData={setEventData}
+                  setAddressData={setAddressData}
                   setAddressSelected={setAddressSelected}
                 />
               )}
@@ -174,7 +175,7 @@ export default function CreateEventForm() {
             sx={{ width: "fit-content", alignSelf: "center" }}
             type="submit"
           >
-            Create Event
+            Submit
           </Button>
         </Stack>
         {apiErrors.address && (
