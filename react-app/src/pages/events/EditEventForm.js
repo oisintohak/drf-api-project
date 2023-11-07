@@ -205,7 +205,7 @@ export default function EditEventForm(props) {
             sx={{ width: "fit-content", alignSelf: "center" }}
             type="submit"
           >
-            Create Event
+            Submit
           </Button>
         </Stack>
         {apiErrors.address && (

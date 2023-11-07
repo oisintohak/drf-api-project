@@ -23,7 +23,7 @@ const EventDetail = () => {
   }, [id]);
   return (
     <Container>
-      {loaded ? <Event {...event} showEdit={event.is_creator} isDetail></Event> : <EventSkeleton />}
+      {loaded ? <Event {...event} isDetail></Event> : <EventSkeleton />}
     </Container>
   );
 };

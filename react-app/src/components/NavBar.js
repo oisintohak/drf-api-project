@@ -36,7 +36,7 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar position="sticky">
+    <AppBar position="fixed">
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Link
           to="/"

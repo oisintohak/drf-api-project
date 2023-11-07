@@ -1,13 +1,29 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {
+  Avatar,
+  CardHeader,
+  Divider,
+  IconButton,
+  MenuItem,
+  MenuList,
+  Stack,
+} from "@mui/material";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { Avatar, CardHeader, Divider, Stack } from "@mui/material";
 import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
 import { NavLink } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { axiosReq } from "../api/axiosDefaults";
+import PopperPopup from "./PopperPopup";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const Event = (props) => {
   const {
@@ -17,14 +33,78 @@ const Event = (props) => {
     starts_at,
     ends_at,
     address,
-    created_at,
-    updated_at,
-    is_creator,
-    eventlist,
     profile_image,
+    is_creator,
     isDetail,
-    showEdit,
   } = props;
+  const history = useHistory();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axiosReq.delete(`/events/${id}/`);
+      history.push("/events");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const popup = (
+    <PopperPopup
+      button={
+        <IconButton>
+          <MoreVertIcon />
+        </IconButton>
+      }
+      popup={
+        <MenuList>
+          <MenuItem>
+            <Link
+              to={`/events/${id}/edit`}
+              component={NavLink}
+              color="secondary"
+            >
+              Edit
+            </Link>
+          </MenuItem>
+          <MenuItem>
+            <Link onClick={handleClickOpen} color="secondary">
+              Delete
+            </Link>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Delete this event?"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  The event will be permanently deleted. This action cannot be undone.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleDelete} autoFocus>
+                  Delete
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </MenuItem>
+        </MenuList>
+      }
+    />
+  );
+
   return (
     <Card sx={{ maxWidth: "20rem" }}>
       <CardHeader
@@ -39,6 +119,7 @@ const Event = (props) => {
             {creator_username}
           </Typography>
         }
+        action={isDetail ? popup : null}
       />
       <CardContent>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
@@ -57,11 +138,6 @@ const Event = (props) => {
         {!isDetail && (
           <Link to={`/events/${id}`} component={NavLink} color="secondary">
             <Button size="small">Learn More</Button>
-          </Link>
-        )}
-        {showEdit && (
-          <Link to={`/events/${id}/edit`} component={NavLink} color="secondary">
-            <Button size="small">Edit</Button>
           </Link>
         )}
       </CardActions>

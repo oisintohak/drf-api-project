@@ -48,7 +48,7 @@ const FilterMenu = (props) => {
     }
   };
   return (
-    <div>
+    <div style={{position: "fixed"}}>
       <Button
         sx={{
           textTransform: "none",

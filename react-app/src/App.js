@@ -14,15 +14,25 @@ function App() {
     <Stack>
       <CssBaseline />
       <NavBar />
-      <Switch>
-        <Route exact path="/" render={() => <EventMap />} />
-        <Route exact path="/login" render={() => <LoginForm />} />
-        <Route exact path="/register" render={() => <RegisterForm />} />
-        <Route exact path="/events/:id" render={() => <EventDetail />} />
-        <Route exact path="/events/" render={() => <EventList />} />
-        <Route exact path="/create-event" render={() => <CreateEventForm />} />
-        <Route exact path="/events/:id/edit" render={() => <EditEventForm />} />
-      </Switch>
+      <Stack sx={{ paddingTop: "100px" }}>
+        <Switch>
+          <Route exact path="/" render={() => <EventMap />} />
+          <Route exact path="/login" render={() => <LoginForm />} />
+          <Route exact path="/register" render={() => <RegisterForm />} />
+          <Route exact path="/events/:id" render={() => <EventDetail />} />
+          <Route exact path="/events/" render={() => <EventList />} />
+          <Route
+            exact
+            path="/create-event"
+            render={() => <CreateEventForm />}
+          />
+          <Route
+            exact
+            path="/events/:id/edit"
+            render={() => <EditEventForm />}
+          />
+        </Switch>
+      </Stack>
     </Stack>
   );
 }

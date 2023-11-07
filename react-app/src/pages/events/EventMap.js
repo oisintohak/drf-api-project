@@ -58,12 +58,12 @@ const EventMap = () => {
     points,
     zoom,
     bounds: mapBounds,
-    options: { radius: 25, maxZoom: 20 },
+    options: { radius: 10, maxZoom: 12 },
   });
 
   return (
-    <div style={{ height: "85vh", width: "100%" }}>
-      <div>
+    <div style={{ height: "100vh", width: "100%" }}>
+      <div style={{ position: "fixed", marginTop: "10rem"}}>
         <FilterMenu dateFilters={dateFilters} setDateFilters={setDateFilters} />
       </div>
       <GoogleMapReact
