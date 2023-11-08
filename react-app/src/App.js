@@ -14,7 +14,7 @@ function App() {
     <Stack>
       <CssBaseline />
       <NavBar />
-      <Stack sx={{ paddingTop: "100px" }}>
+      <Stack>
         <Switch>
           <Route exact path="/" render={() => <EventMap />} />
           <Route exact path="/login" render={() => <LoginForm />} />

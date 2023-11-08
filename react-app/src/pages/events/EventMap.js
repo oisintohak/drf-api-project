@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { axiosReq } from "../../api/axiosDefaults";
 import GoogleMapReact from "google-map-react";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import useSupercluster from "use-supercluster";
 import MapMarkerPopup from "./MapMarkerPopup";
 import FilterMenu from "./FilterMenu";
@@ -62,11 +62,12 @@ const EventMap = () => {
   });
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
-      <div style={{ position: "fixed", marginTop: "10rem"}}>
+    <Box >
+      <div style={{ position: "relative", zIndex: 10, marginTop: "1rem", marginLeft: "1rem" }}>
         <FilterMenu dateFilters={dateFilters} setDateFilters={setDateFilters} />
       </div>
       <GoogleMapReact
+      style={{position: "unset"}}
         bootstrapURLKeys={{
           key: process.env.REACT_APP_GMAPS_API_KEY
             ? process.env.REACT_APP_GMAPS_API_KEY
@@ -146,7 +147,7 @@ const EventMap = () => {
           );
         })}
       </GoogleMapReact>
-    </div>
+    </Box>
   );
 };
 

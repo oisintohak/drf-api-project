@@ -48,7 +48,7 @@ const FilterMenu = (props) => {
     }
   };
   return (
-    <div style={{position: "fixed"}}>
+    <div>
       <Button
         sx={{
           textTransform: "none",
@@ -69,7 +69,6 @@ const FilterMenu = (props) => {
       <Popper
         open={open}
         anchorEl={anchorRef.current}
-        role={undefined}
         placement="bottom-start"
         transition
         disablePortal
@@ -86,14 +85,13 @@ const FilterMenu = (props) => {
             <Paper sx={{ background: "red" }}>
               <ClickAwayListener onClickAway={handleClose}>
                 <Stack
-                  direction='row'
                   spacing={3}
                   onSubmit={(event) => {
                     event.preventDefault();
                   }}
                   component="form"
                   noValidate
-                  sx={{ background: "white", p: 3 }}
+                  sx={{ background: "white", p: 3, minWidth: "300px", width: "100%" }}
                 >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <MobileDatePicker
