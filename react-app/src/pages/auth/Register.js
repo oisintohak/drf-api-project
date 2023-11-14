@@ -1,5 +1,10 @@
 import { ErrorMessage } from "@hookform/error-message";
-import { Alert, Container, Stack, Typography } from "@mui/material";
+import {
+  Container,
+  FormHelperText,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
@@ -19,15 +24,18 @@ export default function RegisterForm() {
     formState: { errors },
   } = useForm({
     defaultValues: { username: "", password1: "", password2: "" },
+    criteriaMode: "all",
   });
   useEffect(() => {
-    console.log(apiErrors);
     for (let [field, messages] of Object.entries(apiErrors)) {
       let types = {};
       for (let i = 0; i < messages.length; i++) {
-        types[`server${i}`] = messages[i];
+        types[`server_error_${i}`] = messages[i];
       }
-      setError(field, {
+      let fieldName = ["username", "password1", "password2"].includes(field)
+        ? field
+        : `root.${field}`; //
+      setError(fieldName, {
         types: types,
       });
     }
@@ -38,16 +46,18 @@ export default function RegisterForm() {
     formData.append("password1", submitData.password1);
     formData.append("password2", submitData.password2);
     try {
-      const { data } = await axios.post("auth/registration/", formData);
+      await axios.post("auth/registration/", formData);
       history.push("/login");
     } catch (err) {
-      if (err.response?.data?.non_field_errors) {
-        setError("root.serverError", {
-          type: err.response?.status,
-          message: err.response?.data,
+      if (err.response?.status !== 400) {
+        setApiErrors({
+          [`server_error_${err.response.status}`]: [
+            `Server Error: ${err.response.statusText}. Please try again.`,
+          ],
         });
+      } else {
+        setApiErrors(err.response?.data);
       }
-      setApiErrors(err.response?.data);
     }
   };
 
@@ -74,7 +84,6 @@ export default function RegisterForm() {
                     errors={errors}
                     name="username"
                     render={({ messages }) => {
-                      console.log("error username", error);
                       if (messages) {
                         return Object.entries(messages).map(
                           ([type, message]) => <p key={type}>{message}</p>
@@ -110,8 +119,6 @@ export default function RegisterForm() {
                     errors={errors}
                     name="password1"
                     render={({ messages }) => {
-                      console.log("error pword1", error);
-
                       if (messages) {
                         return Object.entries(messages).map(
                           ([type, message]) => <p key={type}>{message}</p>
@@ -146,7 +153,6 @@ export default function RegisterForm() {
                     errors={errors}
                     name="password2"
                     render={({ messages }) => {
-                      console.log("error pword2", error);
                       if (messages) {
                         return Object.entries(messages).map(
                           ([type, message]) => <p key={type}>{message}</p>
@@ -168,15 +174,26 @@ export default function RegisterForm() {
             />
           )}
         />
-        {errors.root?.serverError && (
+
+        {errors.root && (
           <Fragment>
-            {Object.entries(errors.root.serverError.message).map(
-              ([key, value]) => (
-                <Alert key={key} severity="error">
-                  {value}
-                </Alert>
-              )
-            )}
+            {Object.entries(errors.root).map(([key, value]) => (
+              <ErrorMessage
+                key={key}
+                name={key}
+                errors={errors.root}
+                render={({ messages }) => {
+                  if (messages) {
+                    return Object.entries(messages).map(([type, message]) => (
+                      <FormHelperText error key={type}>
+                        {message}
+                      </FormHelperText>
+                    ));
+                  }
+                  return null;
+                }}
+              />
+            ))}
           </Fragment>
         )}
         <Button

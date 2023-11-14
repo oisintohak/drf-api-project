@@ -1,21 +1,20 @@
-import { useForm, Controller } from "react-hook-form";
-import React, { Fragment, useState } from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import FormGroup from "@mui/material/FormGroup";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useHistory } from "react-router-dom";
+import TextField from "@mui/material/TextField";
 import axios from "axios";
+import React, { Fragment, useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 
-import { Alert, Box, Container, Stack, Typography } from "@mui/material";
+import { Alert, Container, FormHelperText, Stack, Typography } from "@mui/material";
 import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
 import { setTokenTimestamp } from "../../utils/utils";
+import { useRedirect } from "../../hooks/useRedirect";
+import { ErrorMessage } from "@hookform/error-message";
 export default function LoginForm() {
+  useRedirect("loggedIn");
+  const [apiErrors, setApiErrors] = useState({});
   const setCurrentUser = useSetCurrentUser();
   const history = useHistory();
-
   const {
     control,
     handleSubmit,
@@ -23,8 +22,23 @@ export default function LoginForm() {
     formState: { errors },
   } = useForm({
     defaultValues: { username: "", password: "" },
+    criteriaMode: "all",
   });
-  const [apiErrors, setApiErrors] = useState({});
+
+  useEffect(() => {
+    for (let [field, messages] of Object.entries(apiErrors)) {
+      let types = {};
+      for (let i = 0; i < messages.length; i++) {
+        types[`server_error_${i}`] = messages[i];
+      }
+      let fieldName = ["username", "password"].includes(field)
+        ? field
+        : `root.${field}`; //
+      setError(fieldName, {
+        types: types,
+      });
+    }
+  }, [apiErrors, setError]);
 
   const onSubmit = async (submitData) => {
     const formData = new FormData();
@@ -37,11 +51,15 @@ export default function LoginForm() {
       setTokenTimestamp(data);
       history.goBack();
     } catch (err) {
-      setError("root.serverError", {
-        type: err.response?.status,
-        message: err.response?.data,
-      });
-      setApiErrors(err.response?.data);
+      if (err.response?.status !== 400) {
+        setApiErrors({
+          [`server_error_${err.response.status}`]: [
+            `Server Error: ${err.response.statusText}. Please try again.`,
+          ],
+        });
+      } else {
+        setApiErrors(err.response?.data);
+      }
     }
   };
 
@@ -61,7 +79,23 @@ export default function LoginForm() {
           rules={{ required: "Please enter your username" }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <TextField
-              helperText={error ? error.message : null}
+              FormHelperTextProps={{ component: "div" }}
+              helperText={
+                error ? (
+                  <ErrorMessage
+                    errors={errors}
+                    name="username"
+                    render={({ messages }) => {
+                      if (messages) {
+                        return Object.entries(messages).map(
+                          ([type, message]) => <p key={type}>{message}</p>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                ) : null
+              }
               size="small"
               error={!!error}
               onChange={onChange}
@@ -75,30 +109,58 @@ export default function LoginForm() {
         <Controller
           name="password"
           control={control}
-          rules={{ required: "Please enter your password" }}
+          rules={{
+            required: "Please enter a password",
+          }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <TextField
-              helperText={error ? error.message : null}
+              FormHelperTextProps={{ component: "div" }}
+              helperText={
+                error ? (
+                  <ErrorMessage
+                    errors={errors}
+                    name="password"
+                    render={({ messages }) => {
+                      if (messages) {
+                        return Object.entries(messages).map(
+                          ([type, message]) => <p key={type}>{message}</p>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                ) : null
+              }
               size="small"
               error={!!error}
               onChange={onChange}
               value={value}
               fullWidth
-              label="password"
+              label="Password"
               variant="outlined"
               type="password"
             />
           )}
         />
-        {errors.root?.serverError && (
+        {errors.root && (
           <Fragment>
-            {Object.entries(errors.root.serverError.message).map(
-              ([key, value]) => (
-                <Alert key={key} severity="error">
-                  {value}
-                </Alert>
-              )
-            )}
+            {Object.entries(errors.root).map(([key, value]) => (
+              <ErrorMessage
+                key={key}
+                name={key}
+                errors={errors.root}
+                render={({ messages }) => {
+                  if (messages) {
+                    return Object.entries(messages).map(([type, message]) => (
+                      <FormHelperText error key={type}>
+                        {message}
+                      </FormHelperText>
+                    ));
+                  }
+                  return null;
+                }}
+              />
+            ))}
           </Fragment>
         )}
         <Button
