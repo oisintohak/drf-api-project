@@ -1,117 +1,192 @@
-import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Image from "react-bootstrap/Image";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
-import Alert from "react-bootstrap/Alert";
+import { ErrorMessage } from "@hookform/error-message";
+import { Alert, Container, Stack, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import axios from "axios";
+import React, { Fragment, useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 import { useRedirect } from "../../hooks/useRedirect";
 
-import axios from "axios";
-
-const RegisterForm = () => {
+export default function RegisterForm() {
   useRedirect("loggedIn");
-  const [registerData, setRegisterData] = useState({
-    username: "",
-    password1: "",
-    password2: "",
-  });
-  const { username, password1, password2 } = registerData;
-
-  const [errors, setErrors] = useState({});
-
+  const [apiErrors, setApiErrors] = useState({});
   const history = useHistory();
-
-  const handleChange = (event) => {
-    setRegisterData({
-      ...registerData,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { username: "", password1: "", password2: "" },
+  });
+  useEffect(() => {
+    console.log(apiErrors);
+    for (let [field, messages] of Object.entries(apiErrors)) {
+      let types = {};
+      for (let i = 0; i < messages.length; i++) {
+        types[`server${i}`] = messages[i];
+      }
+      setError(field, {
+        types: types,
+      });
+    }
+  }, [apiErrors, setError]);
+  const onSubmit = async (submitData) => {
+    const formData = new FormData();
+    formData.append("username", submitData.username);
+    formData.append("password1", submitData.password1);
+    formData.append("password2", submitData.password2);
     try {
-      await axios.post("auth/registration/", registerData);
-      history.push("/signin");
+      const { data } = await axios.post("auth/registration/", formData);
+      history.push("/login");
     } catch (err) {
-      setErrors(err.response?.data);
+      if (err.response?.data?.non_field_errors) {
+        setError("root.serverError", {
+          type: err.response?.status,
+          message: err.response?.data,
+        });
+      }
+      setApiErrors(err.response?.data);
     }
   };
 
   return (
-    <Row>
-      <Col className="my-auto py-2 p-md-2" md={6}>
-        <Container className="p-4">
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="username">
-              <Form.Label className="d-none">username</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Username"
-                name="username"
-                value={username}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            {errors.username?.map((message, idx) => (
-              <Alert variant="warning" key={idx}>
-                {message}
-              </Alert>
-            ))}
+    <Container>
+      <Stack
+        spacing={3}
+        onSubmit={handleSubmit(onSubmit)}
+        component="form"
+        noValidate
+        py={3}
+      >
+        <Typography variant="h6">Register a new account:</Typography>
+        <Controller
+          name="username"
+          control={control}
+          rules={{ required: "Please enter your username" }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <TextField
+              FormHelperTextProps={{ component: "div" }}
+              helperText={
+                error ? (
+                  <ErrorMessage
+                    errors={errors}
+                    name="username"
+                    render={({ messages }) => {
+                      console.log("error username", error);
+                      if (messages) {
+                        return Object.entries(messages).map(
+                          ([type, message]) => <p key={type}>{message}</p>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                ) : null
+              }
+              size="small"
+              error={!!error}
+              onChange={onChange}
+              value={value}
+              fullWidth
+              label="username"
+              variant="outlined"
+            />
+          )}
+        />
+        <Controller
+          name="password1"
+          control={control}
+          rules={{
+            required: "Please enter a password",
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <TextField
+              FormHelperTextProps={{ component: "div" }}
+              helperText={
+                error ? (
+                  <ErrorMessage
+                    errors={errors}
+                    name="password1"
+                    render={({ messages }) => {
+                      console.log("error pword1", error);
 
-            <Form.Group controlId="password1">
-              <Form.Label className="d-none">Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                name="password1"
-                value={password1}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            {errors.password1?.map((message, idx) => (
-              <Alert key={idx} variant="warning">
-                {message}
-              </Alert>
-            ))}
-
-            <Form.Group controlId="password2">
-              <Form.Label className="d-none">Confirm password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirm password"
-                name="password2"
-                value={password2}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            {errors.password2?.map((message, idx) => (
-              <Alert key={idx} variant="warning">
-                {message}
-              </Alert>
-            ))}
-
-            <Button type="submit">Sign up</Button>
-            {errors.non_field_errors?.map((message, idx) => (
-              <Alert key={idx} variant="warning" className="mt-3">
-                {message}
-              </Alert>
-            ))}
-          </Form>
-        </Container>
-
-        <Container className="mt-3">
-          <Link to="/signin">
-            Already have an account? <span>Sign in</span>
-          </Link>
-        </Container>
-      </Col>
-    </Row>
+                      if (messages) {
+                        return Object.entries(messages).map(
+                          ([type, message]) => <p key={type}>{message}</p>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                ) : null
+              }
+              size="small"
+              error={!!error}
+              onChange={onChange}
+              value={value}
+              fullWidth
+              label="Password"
+              variant="outlined"
+              type="password"
+            />
+          )}
+        />
+        <Controller
+          name="password2"
+          control={control}
+          rules={{ required: "Please confirm your password" }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <TextField
+              FormHelperTextProps={{ component: "div" }}
+              helperText={
+                error ? (
+                  <ErrorMessage
+                    errors={errors}
+                    name="password2"
+                    render={({ messages }) => {
+                      console.log("error pword2", error);
+                      if (messages) {
+                        return Object.entries(messages).map(
+                          ([type, message]) => <p key={type}>{message}</p>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                ) : null
+              }
+              size="small"
+              error={!!error}
+              onChange={onChange}
+              value={value}
+              fullWidth
+              label="Confirm Password"
+              variant="outlined"
+              type="password"
+            />
+          )}
+        />
+        {errors.root?.serverError && (
+          <Fragment>
+            {Object.entries(errors.root.serverError.message).map(
+              ([key, value]) => (
+                <Alert key={key} severity="error">
+                  {value}
+                </Alert>
+              )
+            )}
+          </Fragment>
+        )}
+        <Button
+          variant="contained"
+          sx={{ width: "fit-content", alignSelf: "center" }}
+          type="submit"
+        >
+          Submit
+        </Button>
+      </Stack>
+    </Container>
   );
-};
-
-export default RegisterForm;
+}
