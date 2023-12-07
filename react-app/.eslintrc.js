@@ -23,7 +23,8 @@ module.exports = {
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": "off",
     "react/prop-types": "off",
-    "camelcase": "off",
-    "react/jsx-props-no-spreading": "off"
+    camelcase: "off",
+    "react/jsx-props-no-spreading": "off",
+    "no-restricted-syntax": "off",
   },
 };

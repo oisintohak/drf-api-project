@@ -12,5 +12,5 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            'id', 'user', 'created_at', 'updated_at', 'first_name', 'last_name', 'image', 'is_user'
+            'id', 'user', 'created_at', 'updated_at', 'bio', 'image', 'is_user'
         ]

@@ -13,7 +13,7 @@ class Event(models.Model):
     place_id = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    main_image = models.ImageField(upload_to="images/", blank=True, null=True)
+    main_image = models.ImageField(upload_to="images/", blank=True, null=True, default="../default.png")
 
     def __str__(self):
         return (

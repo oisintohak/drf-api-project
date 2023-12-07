@@ -42,26 +42,16 @@ export default function CreateEventForm() {
       ...submitData,
       ...addressData,
     }).map(([key, value]) => {
-      console.log(key, value);
       if (key === "starts_at" || key === "ends_at") {
         console.log(key, value.format());
         return formData.append(key, value.format());
       }
+      console.log(key, value);
+      if (key === "main_image" && !value) {
+        return null;
+      }
       return formData.append(key, value);
     });
-    // for (const [key, value] of Object.entries({
-    //   ...submitData,
-    //   ...addressData,
-    // })) {
-    //   console.log(key, value)
-    //   if (key === "starts_at" || key === "ends_at") {
-    //     console.log(key, value.format());
-    //     formData.append(key, value.format());
-    //   }
-    //   else {
-    //     formData.append(key, value);
-    //   }
-    // }
     try {
       const { data } = await axiosReq.post("/events/", formData);
       navigate(`/events/${data.id}`);
