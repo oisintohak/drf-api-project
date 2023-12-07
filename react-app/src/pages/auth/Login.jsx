@@ -3,18 +3,19 @@ import TextField from "@mui/material/TextField";
 import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Alert, Container, FormHelperText, Stack, Typography } from "@mui/material";
+import { ErrorMessage } from "@hookform/error-message";
 import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
 import { setTokenTimestamp } from "../../utils/utils";
 import { useRedirect } from "../../hooks/useRedirect";
-import { ErrorMessage } from "@hookform/error-message";
+
 export default function LoginForm() {
   useRedirect("loggedIn");
   const [apiErrors, setApiErrors] = useState({});
   const setCurrentUser = useSetCurrentUser();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -26,16 +27,16 @@ export default function LoginForm() {
   });
 
   useEffect(() => {
-    for (let [field, messages] of Object.entries(apiErrors)) {
-      let types = {};
+    for (const [field, messages] of Object.entries(apiErrors)) {
+      const types = {};
       for (let i = 0; i < messages.length; i++) {
         types[`server_error_${i}`] = messages[i];
       }
-      let fieldName = ["username", "password"].includes(field)
+      const fieldName = ["username", "password"].includes(field)
         ? field
         : `root.${field}`; //
       setError(fieldName, {
-        types: types,
+        types,
       });
     }
   }, [apiErrors, setError]);
@@ -49,7 +50,7 @@ export default function LoginForm() {
       const { data } = await axios.post("auth/login/", formData);
       setCurrentUser(data.user);
       setTokenTimestamp(data);
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response?.status !== 400) {
         setApiErrors({
@@ -143,7 +144,7 @@ export default function LoginForm() {
           )}
         />
         {errors.root && (
-          <Fragment>
+          <>
             {Object.entries(errors.root).map(([key, value]) => (
               <ErrorMessage
                 key={key}
@@ -161,7 +162,7 @@ export default function LoginForm() {
                 }}
               />
             ))}
-          </Fragment>
+          </>
         )}
         <Button
           variant="contained"

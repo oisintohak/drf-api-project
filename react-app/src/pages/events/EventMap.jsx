@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { axiosReq } from "../../api/axiosDefaults";
 import GoogleMapReact from "google-map-react";
 import { Box, Button } from "@mui/material";
 import useSupercluster from "use-supercluster";
+import { axiosReq } from "../../api/axiosDefaults";
 import MapMarkerPopup from "./MapMarkerPopup";
 import FilterMenu from "./FilterMenu";
 
-const EventMap = () => {
+function EventMap() {
   const mapRef = useRef();
   const [mapBounds, setMapBounds] = useState([]);
   const [zoom, setZoom] = useState(10);
@@ -27,7 +27,7 @@ const EventMap = () => {
           // const { data } = await axiosReq.get(`/events/`);
           console.log(mapBounds);
           let url = `/events/?min_lat=${mapBounds[1]}&max_lat=${mapBounds[3]}&min_long=${mapBounds[0]}&max_long=${mapBounds[2]}`;
-          for (let item in dateFilters) {
+          for (const item in dateFilters) {
             if (dateFilters[item]) {
               url += `&${item}=${dateFilters[item].format("YYYY-MM-DD")}`;
             }
@@ -149,6 +149,6 @@ const EventMap = () => {
       </GoogleMapReact>
     </Box>
   );
-};
+}
 
 export default EventMap;

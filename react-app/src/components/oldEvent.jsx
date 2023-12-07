@@ -8,7 +8,7 @@ const card1 = (
   <Card>
     <Card.Body>
       <Card.Title>Card Title</Card.Title>
-      <Card.Text></Card.Text>
+      <Card.Text />
     </Card.Body>
     <ListGroup className="list-group-flush">
       <ListGroup.Item>Cras justo odio</ListGroup.Item>

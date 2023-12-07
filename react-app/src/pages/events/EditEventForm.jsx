@@ -6,13 +6,14 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
 import dayjs from "dayjs";
-import { useHistory, useParams } from "react-router-dom";
-import { axiosReq } from "../../api/axiosDefaults";
+import { useNavigate, useParams } from "react-router-dom";
 import { Container, Stack, Typography } from "@mui/material";
+import { axiosReq } from "../../api/axiosDefaults";
+import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
+
 export default function EditEventForm(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { id } = useParams();
   const { control, handleSubmit, setValue, trigger, getValues } = useForm({
     defaultValues: { title: "", address: "", starts_at: "", ends_at: "" },
@@ -48,14 +49,14 @@ export default function EditEventForm(props) {
           setAddressSelected(true);
           setAddressData({ lat, long, address, place_id });
         } else {
-          history.push("/");
+          navigate("/");
         }
       } catch (err) {
         console.log(err);
       }
     };
     fetchEvents();
-  }, [id, history, getValues, setValue]);
+  }, [id, navigate, getValues, setValue]);
 
   const onSubmit = async (submitData) => {
     const formData = new FormData();
@@ -71,7 +72,7 @@ export default function EditEventForm(props) {
     }
     try {
       const { data } = await axiosReq.put(`/events/${id}/`, formData);
-      history.push(`/events/${data.id}`);
+      navigate(`/events/${data.id}`);
     } catch (err) {
       console.log(err);
       if (err.response?.status !== 401) {

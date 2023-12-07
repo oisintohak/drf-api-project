@@ -10,13 +10,13 @@ import TextField from "@mui/material/TextField";
 import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRedirect } from "../../hooks/useRedirect";
 
 export default function RegisterForm() {
   useRedirect("loggedIn");
   const [apiErrors, setApiErrors] = useState({});
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -27,16 +27,16 @@ export default function RegisterForm() {
     criteriaMode: "all",
   });
   useEffect(() => {
-    for (let [field, messages] of Object.entries(apiErrors)) {
-      let types = {};
+    for (const [field, messages] of Object.entries(apiErrors)) {
+      const types = {};
       for (let i = 0; i < messages.length; i++) {
         types[`server_error_${i}`] = messages[i];
       }
-      let fieldName = ["username", "password1", "password2"].includes(field)
+      const fieldName = ["username", "password1", "password2"].includes(field)
         ? field
         : `root.${field}`; //
       setError(fieldName, {
-        types: types,
+        types,
       });
     }
   }, [apiErrors, setError]);
@@ -47,7 +47,7 @@ export default function RegisterForm() {
     formData.append("password2", submitData.password2);
     try {
       await axios.post("auth/registration/", formData);
-      history.push("/login");
+      navigate("/login");
     } catch (err) {
       if (err.response?.status !== 400) {
         setApiErrors({
@@ -176,7 +176,7 @@ export default function RegisterForm() {
         />
 
         {errors.root && (
-          <Fragment>
+          <>
             {Object.entries(errors.root).map(([key, value]) => (
               <ErrorMessage
                 key={key}
@@ -194,7 +194,7 @@ export default function RegisterForm() {
                 }}
               />
             ))}
-          </Fragment>
+          </>
         )}
         <Button
           variant="contained"

@@ -1,11 +1,15 @@
+import {
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
+import { CssBaseline, Stack } from "@mui/material";
 import NavBar from "./components/NavBar";
-import { Route, Switch } from "react-router-dom";
 import RegisterForm from "./pages/auth/Register";
 import LoginForm from "./pages/auth/Login";
 import EventList from "./pages/events/EventList";
 import CreateEventForm from "./pages/events/CreateEventForm";
 import EventDetail from "./pages/events/EventDetail";
-import { CssBaseline, Stack } from "@mui/material";
 import EventMap from "./pages/events/EventMap";
 import EditEventForm from "./pages/events/EditEventForm";
 
@@ -15,23 +19,23 @@ function App() {
       <CssBaseline />
       <NavBar />
       <Stack>
-        <Switch>
-          <Route exact path="/" render={() => <EventMap />} />
-          <Route exact path="/login" render={() => <LoginForm />} />
-          <Route exact path="/register" render={() => <RegisterForm />} />
-          <Route exact path="/events/:id" render={() => <EventDetail />} />
-          <Route exact path="/events/" render={() => <EventList />} />
+        <Routes>
+          <Route exact path="/" element={<EventMap />} />
+          <Route exact path="/login" element={<LoginForm />} />
+          <Route exact path="/register" element={<RegisterForm />} />
+          <Route exact path="/events/:id" element={<EventDetail />} />
+          <Route exact path="/events/" element={<EventList />} />
           <Route
             exact
             path="/create-event"
-            render={() => <CreateEventForm />}
+            element={<CreateEventForm />}
           />
           <Route
             exact
             path="/events/:id/edit"
-            render={() => <EditEventForm />}
+            element={<EditEventForm />}
           />
-        </Switch>
+        </Routes>
       </Stack>
     </Stack>
   );

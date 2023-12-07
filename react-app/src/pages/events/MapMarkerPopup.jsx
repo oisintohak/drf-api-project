@@ -8,7 +8,7 @@ import Popper from "@mui/material/Popper";
 import * as React from "react";
 import Event from "../../components/Event";
 
-const MapMarkerPopup = (props) => {
+function MapMarkerPopup(props) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const { is_over } = props
@@ -68,7 +68,7 @@ const MapMarkerPopup = (props) => {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <div>
-                  <Event {...props}></Event>
+                  <Event {...props} />
                 </div>
               </ClickAwayListener>
             </Paper>
@@ -77,6 +77,6 @@ const MapMarkerPopup = (props) => {
       </Popper>
     </div>
   );
-};
+}
 
 export default MapMarkerPopup;

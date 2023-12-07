@@ -10,7 +10,7 @@ import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import * as React from "react";
 
-const FilterMenu = (props) => {
+function FilterMenu(props) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const { dateFilters, setDateFilters } = props;
@@ -39,12 +39,10 @@ const FilterMenu = (props) => {
   const handleChange = (field) => (value, context) => {
     if (value) {
       console.log(value.format());
-      setDateFilters((prevState) => {
-        return {
+      setDateFilters((prevState) => ({
           ...prevState,
           [field]: value,
-        };
-      });
+        }));
     }
   };
   return (
@@ -136,6 +134,6 @@ const FilterMenu = (props) => {
       </Popper>
     </div>
   );
-};
+}
 
 export default FilterMenu;

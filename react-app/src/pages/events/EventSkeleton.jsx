@@ -10,7 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Skeleton from "@mui/material/Skeleton";
 import { Box } from "@mui/material";
-const EventSkeleton = () => {
+
+function EventSkeleton() {
   return (
     <Card sx={{ maxWidth: "20rem", minWidth: "20rem", m: 2 }}>
       <CardHeader
@@ -35,13 +36,13 @@ const EventSkeleton = () => {
       <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
 
       <CardContent>
-        <React.Fragment>
+        <>
           <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
           <Skeleton animation="wave" height={10} width="80%" />
-        </React.Fragment>
+        </>
       </CardContent>
     </Card>
   );
-};
+}
 
 export default EventSkeleton;

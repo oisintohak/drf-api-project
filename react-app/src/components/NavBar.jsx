@@ -15,7 +15,7 @@ import {
 } from "../contexts/CurrentUserContext";
 import { axiosReq } from "../api/axiosDefaults";
 
-const NavBar = () => {
+function NavBar() {
   const handleLogout = async () => {
     try {
       await axiosReq.post("auth/logout/");
@@ -68,7 +68,7 @@ const NavBar = () => {
               <Avatar
                 src={currentUser?.profile_image}
                 sx={{ width: 32, height: 32 }}
-              ></Avatar>
+               />
             </IconButton>
           </Box>
           <Menu
@@ -140,6 +140,6 @@ const NavBar = () => {
       </Toolbar>
     </AppBar>
   );
-};
+}
 
 export default NavBar;

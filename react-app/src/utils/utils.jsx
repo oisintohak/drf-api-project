@@ -7,9 +7,7 @@ export const setTokenTimestamp = (data) => {
   localStorage.setItem("refreshTokenTimestamp", refreshTokenTimestamp);
 };
 
-export const shouldRefreshToken = () => {
-  return !!localStorage.getItem("refreshTokenTimestamp");
-};
+export const shouldRefreshToken = () => !!localStorage.getItem("refreshTokenTimestamp");
 
 export const removeTokenTimestamp = () => {
   localStorage.removeItem("refreshTokenTimestamp");

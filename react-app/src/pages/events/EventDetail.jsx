@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Event from "../../components/Event";
 import { useParams } from "react-router";
-import { axiosReq } from "../../api/axiosDefaults";
 import { Box, Container, Skeleton } from "@mui/material";
+import Event from "../../components/Event";
+import { axiosReq } from "../../api/axiosDefaults";
 import EventSkeleton from "./EventSkeleton";
 
-const EventDetail = () => {
+function EventDetail() {
   const { id } = useParams();
   const [event, setEvent] = useState({ results: [] });
   const [loaded, setLoaded] = useState(false);
@@ -22,10 +22,10 @@ const EventDetail = () => {
     fetchEvents();
   }, [id]);
   return (
-    <Container>
-      {loaded ? <Event {...event} isDetail></Event> : <EventSkeleton />}
+    <Container sx={{p:3}}>
+      {loaded ? <Event {...event} isDetail /> : <EventSkeleton />}
     </Container>
   );
-};
+}
 
 export default EventDetail;

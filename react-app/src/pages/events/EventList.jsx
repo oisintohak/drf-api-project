@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Grid, Skeleton } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import Event from "../../components/Event";
-import { Grid, Skeleton } from "@mui/material";
 import EventSkeleton from "./EventSkeleton";
 
-const EventList = () => {
+function EventList() {
   const [events, setEvents] = useState({ results: [] });
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
@@ -88,6 +88,6 @@ const EventList = () => {
       )}
     </>
   );
-};
+}
 
 export default EventList;

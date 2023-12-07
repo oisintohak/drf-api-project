@@ -6,15 +6,23 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
 import dayjs from "dayjs";
-import { useHistory } from "react-router-dom";
-import { axiosReq } from "../../api/axiosDefaults";
+import { useNavigate } from "react-router-dom";
 import { Container, Stack, Typography } from "@mui/material";
+import { axiosReq } from "../../api/axiosDefaults";
+import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
+import { MuiFileInput } from "mui-file-input";
+
 export default function CreateEventForm() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { control, handleSubmit, setValue, trigger } = useForm({
-    defaultValues: { title: "", address: "", starts_at: "", ends_at: "" },
+    defaultValues: {
+      title: "",
+      address: "",
+      starts_at: "",
+      ends_at: "",
+      main_image: "",
+    },
   });
   const [addressSelected, setAddressSelected] = useState(false);
   const [apiErrors, setApiErrors] = useState({});
@@ -28,20 +36,34 @@ export default function CreateEventForm() {
 
   const onSubmit = async (submitData) => {
     const formData = new FormData();
-    for (const [key, value] of Object.entries({
+    console.log(submitData);
+    Object.entries({
       ...submitData,
       ...addressData,
-    })) {
+    }).map(([key, value]) => {
+      console.log(key, value);
       if (key === "starts_at" || key === "ends_at") {
-        console.log(key, value.format())
-        formData.append(key, value.format());
-      } else {
-        formData.append(key, value);
+        console.log(key, value.format());
+        return formData.append(key, value.format());
       }
-    }
+      return formData.append(key, value);
+    });
+    // for (const [key, value] of Object.entries({
+    //   ...submitData,
+    //   ...addressData,
+    // })) {
+    //   console.log(key, value)
+    //   if (key === "starts_at" || key === "ends_at") {
+    //     console.log(key, value.format());
+    //     formData.append(key, value.format());
+    //   }
+    //   else {
+    //     formData.append(key, value);
+    //   }
+    // }
     try {
       const { data } = await axiosReq.post("/events/", formData);
-      history.push(`/events/${data.id}`);
+      navigate(`/events/${data.id}`);
     } catch (err) {
       console.log(err);
       if (err.response?.status !== 401) {
@@ -62,23 +84,50 @@ export default function CreateEventForm() {
           py={3}
         >
           <Typography variant="h3">Create a new event:</Typography>
-          <Controller
-            name="title"
-            control={control}
-            rules={{ required: "Please enter a title" }}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextField
-                helperText={error ? error.message : null}
-                size="small"
-                error={!!error}
-                onChange={onChange}
-                value={value}
-                fullWidth
-                label="title"
-                variant="outlined"
-              />
-            )}
-          />
+          <FormGroup>
+            <Controller
+              name="title"
+              control={control}
+              rules={{ required: "Please enter a title" }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <TextField
+                  helperText={error ? error.message : null}
+                  size="small"
+                  error={!!error}
+                  onChange={onChange}
+                  value={value}
+                  fullWidth
+                  label="Title"
+                  variant="outlined"
+                />
+              )}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Controller
+              name="main_image"
+              control={control}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <MuiFileInput
+                  helperText={error ? error.message : null}
+                  size="small"
+                  error={!!error}
+                  onChange={onChange}
+                  value={value}
+                  fullWidth
+                  type="file"
+                  label="Main Image"
+                  variant="outlined"
+                />
+              )}
+            />
+          </FormGroup>
           <FormGroup>
             <Controller
               name="address"

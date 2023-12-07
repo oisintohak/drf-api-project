@@ -15,17 +15,16 @@ import CardContent from "@mui/material/CardContent";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { NavLink } from "react-router-dom";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import { axiosReq } from "../api/axiosDefaults";
-import PopperPopup from "./PopperPopup";
+import { NavLink , useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { axiosReq } from "../api/axiosDefaults";
+import PopperPopup from "./PopperPopup";
 
-const Event = (props) => {
+function Event(props) {
   const {
     id,
     creator_username,
@@ -37,7 +36,7 @@ const Event = (props) => {
     is_creator,
     isDetail,
   } = props;
-  const history = useHistory();
+  const navigate = useNavigate()
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -51,11 +50,34 @@ const Event = (props) => {
   const handleDelete = async () => {
     try {
       await axiosReq.delete(`/events/${id}/`);
-      history.push("/events");
+      navigate("/events");
     } catch (err) {
       console.log(err);
     }
   };
+
+  const deleteDialog = (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">Delete this event?</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          The event will be permanently deleted. This action cannot be undone.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleDelete} autoFocus>
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+
   const popup = (
     <PopperPopup
       button={
@@ -78,27 +100,7 @@ const Event = (props) => {
             <Link onClick={handleClickOpen} color="secondary">
               Delete
             </Link>
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Delete this event?"}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  The event will be permanently deleted. This action cannot be undone.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleDelete} autoFocus>
-                  Delete
-                </Button>
-              </DialogActions>
-            </Dialog>
+            {deleteDialog}
           </MenuItem>
         </MenuList>
       }
@@ -119,7 +121,7 @@ const Event = (props) => {
             {creator_username}
           </Typography>
         }
-        action={isDetail ? popup : null}
+        action={isDetail && is_creator ? popup : null}
       />
       <CardContent>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
@@ -143,6 +145,6 @@ const Event = (props) => {
       </CardActions>
     </Card>
   );
-};
+}
 
 export default Event;

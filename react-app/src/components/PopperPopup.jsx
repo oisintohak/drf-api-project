@@ -6,7 +6,7 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import { Fragment, useEffect, useRef, useState } from "react";
 
-const PopperPopup = ({ popup, button }) => {
+function PopperPopup({ popup, button }) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
   const handleToggle = () => {
@@ -28,7 +28,7 @@ const PopperPopup = ({ popup, button }) => {
   }, [open]);
 
   return (
-    <Fragment>
+    <>
       <div
         ref={anchorRef}
         id="composition-button"
@@ -58,16 +58,16 @@ const PopperPopup = ({ popup, button }) => {
           >
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
-                <Fragment>
+                <>
                   {popup}
-                </Fragment>
+                </>
               </ClickAwayListener>
             </Paper>
           </Grow>
         )}
       </Popper>
-    </Fragment>
+    </>
   );
-};
+}
 
 export default PopperPopup;

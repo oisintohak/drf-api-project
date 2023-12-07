@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const useRedirect = (userAuthStatus) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleMount = async () => {
@@ -11,12 +11,12 @@ export const useRedirect = (userAuthStatus) => {
         await axios.post("auth/token/refresh/");
         // if user is logged in, the code below will run
         if (userAuthStatus === "loggedIn") {
-          history.push("/");
+          navigate("/");
         }
       } catch (err) {
         // if user is not logged in, the code below will run
         if (userAuthStatus === "loggedOut") {
-          history.push("/");
+          navigate("/");
         }
       }
     };
