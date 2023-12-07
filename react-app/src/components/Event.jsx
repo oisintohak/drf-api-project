@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
+import CardMedia from '@mui/material/CardMedia';
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
@@ -35,6 +36,7 @@ function Event(props) {
     profile_image,
     is_creator,
     isDetail,
+    main_image
   } = props;
   const navigate = useNavigate()
   const [open, setOpen] = React.useState(false);
@@ -122,6 +124,11 @@ function Event(props) {
           </Typography>
         }
         action={isDetail && is_creator ? popup : null}
+      />
+      <CardMedia
+        sx={{height: "10rem", objectFit: "contain"}}
+        component="img"
+        image={main_image}
       />
       <CardContent>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">

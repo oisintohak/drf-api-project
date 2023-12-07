@@ -21,7 +21,7 @@ class EventImageSerializer(serializers.ModelSerializer):
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
     A ModelSerializer that takes an additional `fields` argument that
-    controls which fields should be displayed. Taken from: 
+    controls which fields should be displayed. Taken from:
     https://www.django-rest-framework.org/api-guide/serializers/#dynamically-modifying-fields
     """
 
@@ -38,7 +38,7 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
             excluded = set(exclude)
             for field_name in excluded:
                 self.fields.pop(field_name)
-            
+
         if fields is not None:
             # Drop any fields that are not specified in the `fields` argument.
             allowed = set(fields)
@@ -55,13 +55,9 @@ class EventSerializer(DynamicFieldsModelSerializer):
     is_over = serializers.BooleanField(read_only=True)
     starts_at = serializers.DateTimeField()
     ends_at = serializers.DateTimeField()
-    images = EventImageSerializer(many=True)
+    # images = EventImageSerializer(many=True, required=False)
     # starts_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
     # ends_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
-
-    def get_is_creator(self, obj):
-        request = self.context["request"]
-        return request.user == obj.created_by
 
     class Meta:
         model = Event
@@ -85,7 +81,26 @@ class EventSerializer(DynamicFieldsModelSerializer):
             "main_image",
         ]
         depth = 3
-        optional_fields = ["created_by"]
+        optional_fields = [
+            "created_by",
+            "main_image",
+        ]
+
+    def get_is_creator(self, obj):
+        request = self.context["request"]
+        return request.user == obj.created_by
+
+    # def create(self, validated_data):
+    #     print('')
+    #     print('')
+    #     print(self.initial_data)
+    #     print('')
+    #     print('')
+    #     print(validated_data)
+    #     main_image_data = validated_data.pop("main_image")
+    #     main_image = EventMainImage.objects.create(image=main_image_data)
+    #     event = Event.objects.create(main_image=main_image, **validated_data)
+    #     return event
 
 
 class ImageSerializer(serializers.ModelSerializer):

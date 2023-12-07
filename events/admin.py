@@ -1,9 +1,14 @@
 from django.contrib import admin
 from .models import *
+
 # Register your models here.
 
 
-admin.site.register(Event)
+class EventModelAdmin(admin.ModelAdmin):
+    readonly_fields = ["created_at", "updated_at"]
+
+
+admin.site.register(Event, EventModelAdmin)
 admin.site.register(EventAdmin)
 admin.site.register(EventGuest)
 admin.site.register(EventInvite)

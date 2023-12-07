@@ -12,6 +12,7 @@ function GoogleMapsAutocomplete(props) {
     setAddressData,
     setAddressSelected,
     trigger,
+    size,
   } = props;
 
   // FIND A WAY TO ENSURE THE SCRIPT HAS LOADED FIRST:
@@ -56,6 +57,7 @@ function GoogleMapsAutocomplete(props) {
       variant="outlined"
       label="address"
       inputRef={inputRef}
+      size={size}
     />
   );
 }

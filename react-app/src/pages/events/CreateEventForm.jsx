@@ -1,17 +1,18 @@
-import { useForm, Controller } from "react-hook-form";
-import React, { useState } from "react";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import { Container, Stack, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import FormGroup from "@mui/material/FormGroup";
+import TextField from "@mui/material/TextField";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import FormGroup from "@mui/material/FormGroup";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import dayjs from "dayjs";
+import { MuiFileInput } from "mui-file-input";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Container, Stack, Typography } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
-import { MuiFileInput } from "mui-file-input";
 
 export default function CreateEventForm() {
   const navigate = useNavigate();
@@ -124,6 +125,9 @@ export default function CreateEventForm() {
                   type="file"
                   label="Main Image"
                   variant="outlined"
+                  InputProps={{
+                    startAdornment: <AttachFileIcon />,
+                  }}
                 />
               )}
             />
@@ -185,6 +189,7 @@ export default function CreateEventForm() {
                     textField: {
                       helperText: error ? error.message : null,
                       error: !!error,
+                      size: "small",
                     },
                   }}
                 />
@@ -213,6 +218,7 @@ export default function CreateEventForm() {
                     textField: {
                       helperText: error ? error.message : null,
                       error: !!error,
+                      size: "small",
                     },
                   }}
                 />

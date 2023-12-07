@@ -20,5 +20,5 @@ Delete - Event Delete Page
 # Issues
 
 - Map markers shifting while zooming
-- Intermittent error on CreateEventForm: 'Google maps places API must be loaded.'
+- Intermittent error on CreateEventForm: 'Google maps places API must be loaded.' - Seems to only happen when refreshing the home page and then navigating to the CreateEventForm, possibly a conflict between both pages loading google APIs
 - Time zone conversion between frontend/backend when creating/listing events
