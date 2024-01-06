@@ -43,6 +43,7 @@ function EventMap() {
                 name: event.title,
                 lat: event.lat,
                 lng: event.lng,
+                created_at: event.created_at
               }),
               lat: parseFloat(event.lat),
               lng: parseFloat(event.long),

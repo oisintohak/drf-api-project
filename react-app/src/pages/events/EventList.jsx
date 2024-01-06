@@ -20,73 +20,69 @@ function EventList() {
     fetchEvents();
   }, []);
 
-  return (
-    <>
-      {loaded ? (
-        <Grid container spacing={3} p={3}>
-          {events.results.map((event) => (
-            <Grid
-              item
-              sx={{ display: "flex", justifyContent: "center" }}
-              xs={12}
-              md={6}
-              xl={4}
-              key={event.id}
-            >
-              <Event {...event} eventlist />
-            </Grid>
-          ))}
+  return loaded ? (
+    <Grid container spacing={3} p={3}>
+      {events.results.map((event) => (
+        <Grid
+          item
+          sx={{ display: "flex", justifyContent: "center" }}
+          xs={12}
+          md={6}
+          xl={4}
+          key={event.id}
+        >
+          <Event {...event} eventlist />
         </Grid>
-      ) : (
-        <Grid container justifyContent="center" spacing={3} p={3}>
-          <Grid
-            sx={{ display: "flex", justifyContent: "center" }}
-            item
-            xs={12}
-            md={6}
-            xl={4}
-          >
-            <EventSkeleton />
-          </Grid>
-          <Grid
-            sx={{ display: "flex", justifyContent: "center" }}
-            item
-            xs={12}
-            md={6}
-            xl={4}
-          >
-            <EventSkeleton />
-          </Grid>
-          <Grid
-            sx={{ display: "flex", justifyContent: "center" }}
-            item
-            xs={12}
-            md={6}
-            xl={4}
-          >
-            <EventSkeleton />
-          </Grid>
-          <Grid
-            sx={{ display: "flex", justifyContent: "center" }}
-            item
-            xs={12}
-            md={6}
-            xl={4}
-          >
-            <EventSkeleton />
-          </Grid>
-          <Grid
-            sx={{ display: "flex", justifyContent: "center" }}
-            item
-            xs={12}
-            md={6}
-            xl={4}
-          >
-            <EventSkeleton />
-          </Grid>
-        </Grid>
-      )}
-    </>
+      ))}
+    </Grid>
+  ) : (
+    <Grid container justifyContent="center" spacing={3} p={3}>
+      <Grid
+        sx={{ display: "flex", justifyContent: "center" }}
+        item
+        xs={12}
+        md={6}
+        xl={4}
+      >
+        <EventSkeleton />
+      </Grid>
+      <Grid
+        sx={{ display: "flex", justifyContent: "center" }}
+        item
+        xs={12}
+        md={6}
+        xl={4}
+      >
+        <EventSkeleton />
+      </Grid>
+      <Grid
+        sx={{ display: "flex", justifyContent: "center" }}
+        item
+        xs={12}
+        md={6}
+        xl={4}
+      >
+        <EventSkeleton />
+      </Grid>
+      <Grid
+        sx={{ display: "flex", justifyContent: "center" }}
+        item
+        xs={12}
+        md={6}
+        xl={4}
+      >
+        <EventSkeleton />
+      </Grid>
+      <Grid
+        sx={{ display: "flex", justifyContent: "center" }}
+        item
+        xs={12}
+        md={6}
+        xl={4}
+      >
+        <EventSkeleton />
+      </Grid>
+    </Grid>
   );
 }
 

@@ -32,7 +32,7 @@ export function CurrentUserProvider({ children }) {
       async (config) => {
         if (shouldRefreshToken()) {
           try {
-            await axios.post("auth/token/refresh/");
+            await axios.post("/auth/token/refresh/");
           } catch (err) {
             setCurrentUser((prevCurrentUser) => {
               if (prevCurrentUser) {
@@ -54,7 +54,7 @@ export function CurrentUserProvider({ children }) {
       async (err) => {
         if (err.response?.status === 401) {
           try {
-            await axios.post("auth/token/refresh/");
+            await axios.post("/auth/token/refresh/");
           } catch (err) {
             setCurrentUser((prevCurrentUser) => {
               if (prevCurrentUser) {
