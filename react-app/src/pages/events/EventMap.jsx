@@ -88,9 +88,9 @@ function EventMap() {
           //   bounds[1],
           // ])
         }}
-        onChange={({ zoom, bounds }) => {
-          setZoom(zoom);
-          console.log(`zoom:`, zoom);
+        onChange={({ mapZoom, bounds }) => {
+          setZoom(mapZoom);
+          console.log(`zoom:`, mapZoom);
           setMapBounds([
             bounds.nw.lng,
             bounds.se.lat,

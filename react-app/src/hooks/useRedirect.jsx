@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const useRedirect = (userAuthStatus) => {
+const useRedirect = (userAuthStatus) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,5 +22,7 @@ export const useRedirect = (userAuthStatus) => {
     };
 
     handleMount();
-  }, [history, userAuthStatus]);
+  }, [navigate, userAuthStatus]);
 };
+
+export default useRedirect;

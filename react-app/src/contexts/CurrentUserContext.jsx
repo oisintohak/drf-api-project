@@ -55,7 +55,7 @@ export function CurrentUserProvider({ children }) {
         if (err.response?.status === 401) {
           try {
             await axios.post("/auth/token/refresh/");
-          } catch (err) {
+          } catch (refreshError) {
             setCurrentUser((prevCurrentUser) => {
               if (prevCurrentUser) {
                 navigate("/login");

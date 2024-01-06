@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Skeleton } from "@mui/material";
+import { Grid } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import Event from "../../components/Event";
 import EventSkeleton from "./EventSkeleton";

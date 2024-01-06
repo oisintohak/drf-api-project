@@ -1,17 +1,12 @@
 import { ErrorMessage } from "@hookform/error-message";
-import {
-  Container,
-  FormHelperText,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Container, FormHelperText, Stack, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useRedirect } from "../../hooks/useRedirect";
+import useRedirect from "../../hooks/useRedirect";
 
 export default function RegisterForm() {
   useRedirect("loggedIn");
@@ -29,7 +24,7 @@ export default function RegisterForm() {
   useEffect(() => {
     for (const [field, messages] of Object.entries(apiErrors)) {
       const types = {};
-      for (let i = 0; i < messages.length; i++) {
+      for (let i = 0; i < messages.length; i += 1) {
         types[`server_error_${i}`] = messages[i];
       }
       const fieldName = ["username", "password1", "password2"].includes(field)
@@ -177,10 +172,10 @@ export default function RegisterForm() {
 
         {errors.root && (
           <>
-            {Object.entries(errors.root).map(([key, value]) => (
+            {Object.entries(errors.root).map((errorArray) => (
               <ErrorMessage
-                key={key}
-                name={key}
+                key={errorArray[0]}
+                name={errorArray[0]}
                 errors={errors.root}
                 render={({ messages }) => {
                   if (messages) {

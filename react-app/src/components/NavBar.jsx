@@ -16,6 +16,8 @@ import {
 import { axiosReq } from "../api/axiosDefaults";
 
 function NavBar() {
+  const currentUser = useCurrentUser();
+  const setCurrentUser = useSetCurrentUser();
   const handleLogout = async () => {
     try {
       await axiosReq.post("auth/logout/");
@@ -24,8 +26,6 @@ function NavBar() {
       console.log(err);
     }
   };
-  const currentUser = useCurrentUser();
-  const setCurrentUser = useSetCurrentUser();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {

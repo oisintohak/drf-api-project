@@ -10,9 +10,9 @@ import { axiosReq } from "../../api/axiosDefaults";
 import MapMarkerPopup from "./MapMarkerPopup";
 
 function EventMap() {
-  const mapRef = useRef();
+  // const mapRef = useRef();
   const [mapBounds, setMapBounds] = useState([0, 180, -90, -180]);
-  const [zoom, setZoom] = useState(10);
+  // const [zoom, setZoom] = useState(10);
   const [points, setPoints] = useState([]);
   const [dateFilters, setDateFilters] = useState({
     starts_after: null,

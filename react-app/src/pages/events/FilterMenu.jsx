@@ -36,7 +36,7 @@ function FilterMenu(props) {
   }, [open]);
 
   // handleChange currying syntax stolen from https://mui.com/material-ui/react-popper/#positioned-popper
-  const handleChange = (field) => (value, context) => {
+  const handleChange = (field) => (value) => {
     if (value) {
       console.log(value.format());
       setDateFilters((prevState) => ({

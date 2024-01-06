@@ -1,7 +1,6 @@
 import {
   Routes,
   Route,
-  Link,
 } from "react-router-dom";
 import { CssBaseline, Stack } from "@mui/material";
 import NavBar from "./components/NavBar";

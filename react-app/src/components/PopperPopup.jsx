@@ -1,5 +1,4 @@
 // Popper with ClickAwayListener adapted from: https://mui.com/material-ui/react-menu/#menulist-composition
-import { Button } from "@mui/material";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
 import Paper from "@mui/material/Paper";
@@ -29,6 +28,9 @@ function PopperPopup({ popup, button }) {
 
   return (
     <>
+    {
+    /* TODO: Find fix to pass clickHandler to button, or other changes comply with eslint error */
+    /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
       <div
         ref={anchorRef}
         id="composition-button"
@@ -37,6 +39,8 @@ function PopperPopup({ popup, button }) {
         aria-haspopup="true"
         onClick={handleToggle}
       >
+    {/* eslint-enable, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+
         {button}
       </div>
       <Popper
@@ -58,9 +62,7 @@ function PopperPopup({ popup, button }) {
           >
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
-                <>
-                  {popup}
-                </>
+                {popup}
               </ClickAwayListener>
             </Paper>
           </Grow>

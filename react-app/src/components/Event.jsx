@@ -99,9 +99,9 @@ function Event(props) {
             </Link>
           </MenuItem>
           <MenuItem>
-            <Link onClick={handleClickOpen} color="secondary">
+            <Button onClick={handleClickOpen} color="secondary">
               Delete
-            </Link>
+            </Button>
             {deleteDialog}
           </MenuItem>
         </MenuList>

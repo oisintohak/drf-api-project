@@ -12,7 +12,7 @@ import { Container, Stack, Typography } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
 
-export default function EditEventForm(props) {
+export default function EditEventForm() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { control, handleSubmit, setValue, trigger, getValues } = useForm({
@@ -26,7 +26,7 @@ export default function EditEventForm(props) {
     address: "",
     place_id: "",
   });
-  const { address } = addressData;
+  const { selectedAddress } = addressData;
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -141,7 +141,7 @@ export default function EditEventForm(props) {
               )}
             />
             <Typography variant="caption">
-              Selected Address: {address}
+              Selected Address: {selectedAddress}
             </Typography>
           </FormGroup>
 

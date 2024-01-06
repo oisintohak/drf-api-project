@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Container, Skeleton } from "@mui/material";
+import { Container } from "@mui/material";
 import Event from "../../components/Event";
 import { axiosReq } from "../../api/axiosDefaults";
 import EventSkeleton from "./EventSkeleton";
