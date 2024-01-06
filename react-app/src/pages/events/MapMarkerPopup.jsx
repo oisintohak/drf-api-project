@@ -11,7 +11,7 @@ import Event from "../../components/Event";
 function MapMarkerPopup(props) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const { is_over } = props
+  const { is_over } = props;
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -36,10 +36,10 @@ function MapMarkerPopup(props) {
   }, [open]);
 
   return (
-    <div>
+    <div style={{ position: "relative", bottom: "24px", right: "12px" }}>
       <IconButton
         size="large"
-        sx={{ color: is_over ? "pink" : "red" }}
+        sx={{ color: is_over ? "pink" : "red", padding: 0 }}
         ref={anchorRef}
         id="composition-button"
         aria-controls={open ? "composition-menu" : undefined}
