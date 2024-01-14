@@ -52,6 +52,20 @@ function NavBar() {
         >
           <Typography variant="h5">Eventually</Typography>
         </Link>
+        <Link
+          to="/test"
+          component={NavLink}
+          sx={{
+            textDecoration: "none",
+            color: "white",
+            "&:hover": {
+              color: "white",
+            },
+          }}
+          color="secondary"
+        >
+          <Typography variant="h5">test</Typography>
+        </Link>
 
         <>
           <Box
@@ -68,7 +82,7 @@ function NavBar() {
               <Avatar
                 src={currentUser?.profile_image}
                 sx={{ width: 32, height: 32 }}
-               />
+              />
             </IconButton>
           </Box>
           <Menu

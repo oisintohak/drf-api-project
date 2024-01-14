@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { TextField } from "@mui/material";
 import { usePlacesWidget } from "react-google-autocomplete";
 
@@ -14,17 +14,6 @@ function GoogleMapsAutocomplete(props) {
     trigger,
     size,
   } = props;
-
-  // FIND A WAY TO ENSURE THE SCRIPT HAS LOADED FIRST:
-  // const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
-  // useEffect(() => {
-  //   if (window.google) console.log("google:", window.google);
-
-  //   if (typeof google !== "undefined") {
-  //     if (window.google.maps && window.google.maps.api)
-  //       setGoogleScriptLoaded(true);
-  //   }
-  // }, [window.google]);
 
   const { ref: inputRef } = usePlacesWidget({
     apiKey: process.env.REACT_APP_GMAPS_API_KEY

@@ -9,7 +9,7 @@ import FilterMenu from "./FilterMenu";
 function EventMap() {
   const mapRef = useRef();
   const [mapBounds, setMapBounds] = useState([]);
-  const [zoom, setZoom] = useState(10);
+  const [mapZoom, setMapZoom] = useState(10);
   const [points, setPoints] = useState([]);
   const [dateFilters, setDateFilters] = useState({
     starts_after: null,
@@ -25,7 +25,7 @@ function EventMap() {
       if (mapBounds.length) {
         try {
           // const { data } = await axiosReq.get(`/events/`);
-          console.log(mapBounds);
+          // console.log(mapBounds);
           let url = `/events/?min_lat=${mapBounds[1]}&max_lat=${mapBounds[3]}&min_long=${mapBounds[0]}&max_long=${mapBounds[2]}`;
           for (const item in dateFilters) {
             if (dateFilters[item]) {
@@ -46,7 +46,7 @@ function EventMap() {
               },
             }))
           );
-          console.log(data);
+          // console.log(data);
         } catch (error) {
           console.log(error);
         }
@@ -56,18 +56,25 @@ function EventMap() {
   }, [mapBounds, dateFilters]);
   const { clusters, supercluster } = useSupercluster({
     points,
-    zoom,
+    zoom: mapZoom,
     bounds: mapBounds,
     options: { radius: 5, maxZoom: 3 },
   });
 
   return (
-    <Box >
-      <div style={{ position: "relative", zIndex: 10, marginTop: "1rem", marginLeft: "1rem" }}>
+    <Box>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 10,
+          marginTop: "1rem",
+          marginLeft: "1rem",
+        }}
+      >
         <FilterMenu dateFilters={dateFilters} setDateFilters={setDateFilters} />
       </div>
       <GoogleMapReact
-      style={{position: "unset"}}
+        style={{ position: "unset" }}
         bootstrapURLKeys={{
           key: process.env.REACT_APP_GMAPS_API_KEY
             ? process.env.REACT_APP_GMAPS_API_KEY
@@ -88,9 +95,8 @@ function EventMap() {
           //   bounds[1],
           // ])
         }}
-        onChange={({ mapZoom, bounds }) => {
-          setZoom(mapZoom);
-          console.log(`zoom:`, mapZoom);
+        onChange={({ zoom, bounds }) => {
+          setMapZoom(zoom);
           setMapBounds([
             bounds.nw.lng,
             bounds.se.lat,

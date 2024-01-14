@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
+import GooglePlacesAutocomplete from "../../utils/GooglePlacesAutocomplete";
 
 export default function CreateEventForm() {
   const navigate = useNavigate();
@@ -135,7 +136,7 @@ export default function CreateEventForm() {
                 field: { onChange, value },
                 fieldState: { error },
               }) => (
-                <GoogleMapsAutocomplete
+                <GooglePlacesAutocomplete
                   helperText={
                     error
                       ? error.message
