@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "@mui/material/utils";
 import { Loader } from "@googlemaps/js-api-loader";
+import useOnUpdate from "../../hooks/useOnUpdate";
 
 const loader = new Loader({
   apiKey: process.env.REACT_APP_GMAPS_API_KEY
@@ -19,43 +20,32 @@ const loader = new Loader({
     : window.REACT_APP_GMAPS_API_KEY,
 });
 
-// const autocompleteService = { current: null };
-// const placesService = { current: null };
-
 export default function GooglePlacesAutocomplete(props) {
-  const {
-    helperText,
-    error,
-    onChange,
-    value,
-    setValue,
-    setAddressData,
-    setAddressSelected,
-    trigger,
-    size,
-  } = props;
-  const placesRef = useRef(null);
+  const { helperText, error, setValue, setAddressData, addressData, size } =
+    props;
+  const { address } = addressData;
+
+  const placesServiceDomRef = useRef(null);
   const placesService = useRef(null);
   const sessionToken = useRef(null);
   const autocompleteService = useRef(null);
+  useOnUpdate(() => {
+    setValue("address", address, { shouldValidate: true }); // set the address field value for react-hook-form
+  }, [addressData]);
 
   const onPlaceSelected = (place) => {
-    setAddressSelected(true);
-    setValue("address", place.formatted_address); // set the address field value for react-hook-form
-    trigger("address"); // trigger input validation
-    setAddressData((prevAddressData) => ({
-      ...prevAddressData,
+    setAddressData({
       lat: place.geometry.location.lat().toString().slice(0, 12),
       long: place.geometry.location.lng().toString().slice(0, 12),
       address: place.formatted_address,
       place_id: place.place_id,
-    }));
+    });
+    console.log(place);
   };
 
   const [selectedValue, setSelectedValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState([]);
-  // const loaded = React.useRef(false);
   useEffect(() => {
     loader.load().then(async () => {
       await window.google.maps.importLibrary("places");
@@ -71,13 +61,14 @@ export default function GooglePlacesAutocomplete(props) {
   );
 
   useEffect(() => {
+    console.log("placesServiceDomRef", placesServiceDomRef);
     if (
       !placesService.current &&
       window.google.maps.places &&
-      placesRef.current
+      placesServiceDomRef.current
     ) {
       placesService.current = new window.google.maps.places.PlacesService(
-        placesRef.current
+        placesServiceDomRef.current
       );
     }
     if (!placesService.current) {
@@ -95,20 +86,13 @@ export default function GooglePlacesAutocomplete(props) {
       onPlaceSelected
     );
     sessionToken.current = null;
-    console.log("selectedValue", selectedValue);
+    return undefined;
   }, [selectedValue]);
 
   useEffect(() => {
-    // console.log("selectedValue", selectedValue);
-    // console.log("inputvalue", inputValue);
     if (!sessionToken.current && window.google.maps.places) {
       sessionToken.current =
         new window.google.maps.places.AutocompleteSessionToken();
-
-      console.log(
-        `%c new session token ${sessionToken.current}`,
-        "color:green; font-size:20px;"
-      );
     }
     let active = true;
     if (!autocompleteService.current && window.google.maps.places) {
@@ -127,18 +111,14 @@ export default function GooglePlacesAutocomplete(props) {
     fetch(
       { input: inputValue, sessionToken: sessionToken.current },
       (results) => {
-        console.log(results);
         if (active) {
           let newOptions = [];
-
           if (selectedValue) {
             newOptions = [selectedValue];
           }
-
           if (results) {
             newOptions = [...newOptions, ...results];
           }
-
           setOptions(newOptions);
         }
       }
@@ -167,15 +147,17 @@ export default function GooglePlacesAutocomplete(props) {
         onChange={(event, newValue) => {
           setOptions(newValue ? [newValue, ...options] : options);
           setSelectedValue(newValue);
+          console.log(newValue);
         }}
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
         }}
         renderInput={(params) => (
           <TextField
+            {...params}
             helperText={helperText}
             error={error}
-            {...params}
+            size={size}
             label="Add a location"
             fullWidth
           />
@@ -190,7 +172,7 @@ export default function GooglePlacesAutocomplete(props) {
           );
 
           return (
-            <li {...props}>
+            <li {...optionProps}>
               <Grid container alignItems="center">
                 <Grid item sx={{ display: "flex", width: 44 }}>
                   <LocationOnIcon sx={{ color: "text.secondary" }} />
@@ -201,6 +183,7 @@ export default function GooglePlacesAutocomplete(props) {
                 >
                   {parts.map((part, index) => (
                     <Box
+                      // eslint-disable-next-line react/no-array-index-key
                       key={index}
                       component="span"
                       sx={{ fontWeight: part.highlight ? "bold" : "regular" }}
@@ -217,14 +200,15 @@ export default function GooglePlacesAutocomplete(props) {
           );
         }}
       />
-      <div ref={placesRef} />
-      {selectedValue && (
-        <div>
-          {Object.keys(selectedValue).map((key) => (
-            <span key={key}>{key}</span>
-          ))}
-        </div>
-      )}
+      {/*  needs a DOM ref to display attributions: */}
+      <div ref={placesServiceDomRef} />
     </>
+    // {selectedValue && (
+    //   <div>
+    //     {Object.keys(selectedValue).map((key) => (
+    //       <span key={key}>{key}</span>
+    //     ))}
+    //   </div>
+    // )}
   );
 }

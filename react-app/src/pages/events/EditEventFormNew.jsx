@@ -1,29 +1,22 @@
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import { Container, Stack, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import FormGroup from "@mui/material/FormGroup";
-import TextField from "@mui/material/TextField";
+import { useForm, Controller } from "react-hook-form";
+import React, { useEffect, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import FormGroup from "@mui/material/FormGroup";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 import dayjs from "dayjs";
-import { MuiFileInput } from "mui-file-input";
-import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Container, Stack, Typography } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import GooglePlacesAutocomplete from "./GooglePlacesAutocomplete";
 
-export default function CreateEventForm() {
+export default function EditEventFormNew() {
   const navigate = useNavigate();
-  const { control, handleSubmit, setValue } = useForm({
-    defaultValues: {
-      title: "",
-      address: "",
-      starts_at: "",
-      ends_at: "",
-      main_image: "",
-    },
+  const { id } = useParams();
+  const { control, handleSubmit, setValue, getValues } = useForm({
+    defaultValues: { title: "", address: "", starts_at: "", ends_at: "" },
   });
   const [apiErrors, setApiErrors] = useState({});
   const [addressData, setAddressData] = useState({
@@ -34,27 +27,52 @@ export default function CreateEventForm() {
   });
   const { lat, long, address, place_id } = addressData;
 
+  const { selectedAddress } = addressData;
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const { data } = await axiosReq.get(`/events/${id}/`);
+        if (data.is_creator) {
+          setValue("title", data.title);
+          setValue("address", data.address);
+          setValue("ends_at", dayjs(data.ends_at));
+          setValue("starts_at", dayjs(data.starts_at));
+          setAddressData({
+            lat: data.lat,
+            long: data.long,
+            address: data.address,
+            place_id: data.place_id,
+          });
+        } else {
+          navigate("/");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchEvents();
+  }, [id, navigate, getValues, setValue]);
+
   const onSubmit = async (submitData) => {
     const formData = new FormData();
-    Object.entries({
+    for (const [key, value] of Object.entries({
       ...submitData,
       ...addressData,
-    }).map(([key, value]) => {
+    })) {
       if (key === "starts_at" || key === "ends_at") {
-        console.log(key, value.format());
-        return formData.append(key, value.format());
+        formData.append(key, value.format());
+      } else {
+        formData.append(key, value);
       }
-      if (key === "main_image" && !value) {
-        return null;
-      }
-      return formData.append(key, value);
-    });
+    }
     try {
-      const { data } = await axiosReq.post("/events/", formData);
+      const { data } = await axiosReq.put(`/events/${id}/`, formData);
       navigate(`/events/${data.id}`);
     } catch (err) {
+      console.log(err);
       if (err.response?.status !== 401) {
         setApiErrors(err.response?.data);
+        console.log(apiErrors);
       }
     }
   };
@@ -69,54 +87,24 @@ export default function CreateEventForm() {
           noValidate
           py={3}
         >
-          <Typography variant="h3">Create a new event:</Typography>
-          <FormGroup>
-            <Controller
-              name="title"
-              control={control}
-              rules={{ required: "Please enter a title" }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <TextField
-                  helperText={error ? error.message : null}
-                  size="small"
-                  error={!!error}
-                  onChange={onChange}
-                  value={value}
-                  fullWidth
-                  label="Title"
-                  variant="outlined"
-                />
-              )}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Controller
-              name="main_image"
-              control={control}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <MuiFileInput
-                  helperText={error ? error.message : null}
-                  size="small"
-                  error={!!error}
-                  onChange={onChange}
-                  value={value}
-                  fullWidth
-                  type="file"
-                  label="Main Image"
-                  variant="outlined"
-                  InputProps={{
-                    startAdornment: <AttachFileIcon />,
-                  }}
-                />
-              )}
-            />
-          </FormGroup>
+          <Typography variant="h3">Edit Event:</Typography>
+          <Controller
+            name="title"
+            control={control}
+            rules={{ required: "Please enter a title" }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                helperText={error ? error.message : null}
+                size="small"
+                error={!!error}
+                onChange={onChange}
+                value={value}
+                fullWidth
+                label="title"
+                variant="outlined"
+              />
+            )}
+          />
           <FormGroup>
             <Controller
               name="address"
@@ -145,7 +133,7 @@ export default function CreateEventForm() {
               )}
             />
             <Typography variant="caption">
-              Selected Address: {address}
+              Selected Address: {selectedAddress}
             </Typography>
           </FormGroup>
 
@@ -171,7 +159,6 @@ export default function CreateEventForm() {
                     textField: {
                       helperText: error ? error.message : null,
                       error: !!error,
-                      size: "small",
                     },
                   }}
                 />
@@ -200,7 +187,6 @@ export default function CreateEventForm() {
                     textField: {
                       helperText: error ? error.message : null,
                       error: !!error,
-                      size: "small",
                     },
                   }}
                 />
