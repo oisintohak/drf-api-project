@@ -52,20 +52,6 @@ function NavBar() {
         >
           <Typography variant="h5">Eventually</Typography>
         </Link>
-        <Link
-          to="/test"
-          component={NavLink}
-          sx={{
-            textDecoration: "none",
-            color: "white",
-            "&:hover": {
-              color: "white",
-            },
-          }}
-          color="secondary"
-        >
-          <Typography variant="h5">test</Typography>
-        </Link>
 
         <>
           <Box

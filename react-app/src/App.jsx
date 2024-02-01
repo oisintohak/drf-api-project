@@ -8,7 +8,7 @@ import CreateEventForm from "./pages/events/CreateEventForm";
 import EventDetail from "./pages/events/EventDetail";
 import EventMap from "./pages/events/EventMap";
 import EditEventForm from "./pages/events/EditEventForm";
-import EditEventFormNew from "./pages/events/EditEventFormNew";
+
 
 function App() {
   return (
@@ -24,7 +24,6 @@ function App() {
           <Route exact path="/events" element={<EventList />} />
           <Route exact path="/create-event" element={<CreateEventForm />} />
           <Route exact path="/events/:id/edit" element={<EditEventForm />} />
-          <Route exact path="/events/:id/editnew" element={<EditEventFormNew />} />
         </Routes>
       </Stack>
     </Stack>

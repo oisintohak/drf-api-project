@@ -10,15 +10,14 @@ import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container, Stack, Typography } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
-import GoogleMapsAutocomplete from "./GoogleMapsAutocomplete";
+import GooglePlacesAutocomplete from "./GooglePlacesAutocomplete";
 
-export default function EditEventForm() {
+export default function EditEventFormNew() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { control, handleSubmit, setValue, trigger, getValues } = useForm({
+  const { control, handleSubmit, setValue, getValues } = useForm({
     defaultValues: { title: "", address: "", starts_at: "", ends_at: "" },
   });
-  const [addressSelected, setAddressSelected] = useState(false);
   const [apiErrors, setApiErrors] = useState({});
   const [addressData, setAddressData] = useState({
     lat: "",
@@ -26,28 +25,25 @@ export default function EditEventForm() {
     address: "",
     place_id: "",
   });
-  const { selectedAddress } = addressData;
+  const { lat, long, address, place_id } = addressData;
+  const [addressInitialValue, setAddressInitialValue] = useState(null)
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const { data } = await axiosReq.get(`/events/${id}/`);
-        const {
-          title,
-          address,
-          ends_at,
-          starts_at,
-          is_creator,
-          lat,
-          long,
-          place_id,
-        } = data;
-        if (is_creator) {
-          setValue("title", title);
-          setValue("address", address);
-          setValue("ends_at", dayjs(ends_at));
-          setValue("starts_at", dayjs(starts_at));
-          setAddressSelected(true);
-          setAddressData({ lat, long, address, place_id });
+        if (data.is_creator) {
+          setAddressInitialValue(data.address)
+          setValue("title", data.title);
+          setValue("address", data.address);
+          setValue("ends_at", dayjs(data.ends_at));
+          setValue("starts_at", dayjs(data.starts_at));
+          setAddressData({
+            lat: data.lat,
+            long: data.long,
+            address: data.address,
+            place_id: data.place_id,
+          });
         } else {
           navigate("/");
         }
@@ -116,14 +112,16 @@ export default function EditEventForm() {
               control={control}
               rules={{
                 validate: () =>
-                  addressSelected ||
+                  (!!address && !!lat && !!long && !!place_id) ||
                   "Please select a valid address from the dropdown",
               }}
               render={({
-                field: { onChange, value },
                 fieldState: { error },
               }) => (
-                <GoogleMapsAutocomplete
+                /* value and onchange are not passed to this component, as it handles its own values internally
+                and updates the addressData state variable. 
+                validation is done by checking the addressData state variable. */
+                <GooglePlacesAutocomplete
                   helperText={
                     error
                       ? error.message
@@ -131,17 +129,16 @@ export default function EditEventForm() {
                   }
                   size="small"
                   error={!!error}
-                  onChange={onChange}
-                  value={value}
                   setValue={setValue}
-                  trigger={trigger}
                   setAddressData={setAddressData}
-                  setAddressSelected={setAddressSelected}
+                  addressData={addressData}
+                  value={address}
+                  initialValue={addressInitialValue}
                 />
               )}
             />
             <Typography variant="caption">
-              Selected Address: {selectedAddress}
+              Selected Address: {address}
             </Typography>
           </FormGroup>
 

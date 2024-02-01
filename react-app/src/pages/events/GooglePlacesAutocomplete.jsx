@@ -21,15 +21,43 @@ const loader = new Loader({
 });
 
 export default function GooglePlacesAutocomplete(props) {
-  const { helperText, error, setValue, setAddressData, addressData, size } =
-    props;
+  const {
+    helperText,
+    error,
+    setValue,
+    setAddressData,
+    addressData,
+    size,
+    initialValue,
+  } = props;
   const { address } = addressData;
 
   const placesServiceDomRef = useRef(null);
   const placesService = useRef(null);
   const sessionToken = useRef(null);
   const autocompleteService = useRef(null);
+  const [selectedValue, setSelectedValue] = React.useState(null);
+  const [inputValue, setInputValue] = React.useState("");
+  const [options, setOptions] = React.useState([]);
+  const [initialValueLoaded, setInitialValueLoaded] = React.useState(false);
+
+  useEffect(() => {
+    /*
+    initialValue is the previous address value when editing an event
+    initialValue is only set once, when the API data loads
+    the initialValueLoaded variable is used to prevent the selectedValue being set to null, 
+    which throws an error about the component switching from controlled to uncontrolled
+    */
+    if (initialValue && !initialValueLoaded) {
+      setInitialValueLoaded(true);
+      setSelectedValue(initialValue);
+    }
+  }, [initialValue, setInputValue]);
+
   useOnUpdate(() => {
+    /*
+    this effect won't run on the initial render when the address is an empty string
+    */
     setValue("address", address, { shouldValidate: true }); // set the address field value for react-hook-form
   }, [addressData]);
 
@@ -40,12 +68,8 @@ export default function GooglePlacesAutocomplete(props) {
       address: place.formatted_address,
       place_id: place.place_id,
     });
-    console.log(place);
   };
 
-  const [selectedValue, setSelectedValue] = React.useState(null);
-  const [inputValue, setInputValue] = React.useState("");
-  const [options, setOptions] = React.useState([]);
   useEffect(() => {
     loader.load().then(async () => {
       await window.google.maps.importLibrary("places");
@@ -61,7 +85,11 @@ export default function GooglePlacesAutocomplete(props) {
   );
 
   useEffect(() => {
-    console.log("placesServiceDomRef", placesServiceDomRef);
+    /*
+    This effect will execute when the selectedValue is updated. 
+    It will create an instance of PlacesService if required. 
+    Then it will make a request to get the place details and remove the session token
+    */
     if (
       !placesService.current &&
       window.google.maps.places &&
@@ -90,6 +118,11 @@ export default function GooglePlacesAutocomplete(props) {
   }, [selectedValue]);
 
   useEffect(() => {
+    /*
+    This effect is executed when the selectedValue or inputValue are updated.
+    It creates new instances of AutocompleteSessionToken and AutocompleteService if required.
+    Then it makes a new request to get Place predictions using the debounce fetch function
+    */
     if (!sessionToken.current && window.google.maps.places) {
       sessionToken.current =
         new window.google.maps.places.AutocompleteSessionToken();
@@ -132,7 +165,7 @@ export default function GooglePlacesAutocomplete(props) {
   return (
     <>
       <Autocomplete
-        id="google-map-demo"
+        id="google-places-autocomplete"
         sx={{ width: 300 }}
         getOptionLabel={(option) =>
           typeof option === "string" ? option : option.description
@@ -147,7 +180,6 @@ export default function GooglePlacesAutocomplete(props) {
         onChange={(event, newValue) => {
           setOptions(newValue ? [newValue, ...options] : options);
           setSelectedValue(newValue);
-          console.log(newValue);
         }}
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
@@ -164,15 +196,14 @@ export default function GooglePlacesAutocomplete(props) {
         )}
         renderOption={(optionProps, option) => {
           const matches =
-            option.structured_formatting.main_text_matched_substrings || [];
+            option.structured_formatting?.main_text_matched_substrings || [];
 
           const parts = parse(
-            option.structured_formatting.main_text,
+            option.structured_formatting?.main_text,
             matches.map((match) => [match.offset, match.offset + match.length])
           );
-
           return (
-            <li {...optionProps}>
+            <li {...optionProps} key={`${optionProps.key}_${optionProps.id}`}>
               <Grid container alignItems="center">
                 <Grid item sx={{ display: "flex", width: 44 }}>
                   <LocationOnIcon sx={{ color: "text.secondary" }} />
@@ -192,7 +223,7 @@ export default function GooglePlacesAutocomplete(props) {
                     </Box>
                   ))}
                   <Typography variant="body2" color="text.secondary">
-                    {option.structured_formatting.secondary_text}
+                    {option.structured_formatting?.secondary_text}
                   </Typography>
                 </Grid>
               </Grid>
@@ -203,12 +234,5 @@ export default function GooglePlacesAutocomplete(props) {
       {/*  needs a DOM ref to display attributions: */}
       <div ref={placesServiceDomRef} />
     </>
-    // {selectedValue && (
-    //   <div>
-    //     {Object.keys(selectedValue).map((key) => (
-    //       <span key={key}>{key}</span>
-    //     ))}
-    //   </div>
-    // )}
   );
 }
