@@ -1,3 +1,4 @@
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { useForm, Controller } from "react-hook-form";
 import React, { useEffect, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -11,12 +12,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Container, Stack, Typography } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import GooglePlacesAutocomplete from "./GooglePlacesAutocomplete";
+import { MuiFileInput } from "mui-file-input";
 
 export default function EditEventFormNew() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { control, handleSubmit, setValue, getValues } = useForm({
-    defaultValues: { title: "", address: "", starts_at: "", ends_at: "" },
+    defaultValues: {
+      title: "",
+      address: "",
+      starts_at: "",
+      ends_at: "",
+      main_image: "",
+    },
   });
   const [apiErrors, setApiErrors] = useState({});
   const [addressData, setAddressData] = useState({
@@ -26,14 +34,14 @@ export default function EditEventFormNew() {
     place_id: "",
   });
   const { lat, long, address, place_id } = addressData;
-  const [addressInitialValue, setAddressInitialValue] = useState(null)
+  const [addressInitialValue, setAddressInitialValue] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const { data } = await axiosReq.get(`/events/${id}/`);
         if (data.is_creator) {
-          setAddressInitialValue(data.address)
+          setAddressInitialValue(data.address);
           setValue("title", data.title);
           setValue("address", data.address);
           setValue("ends_at", dayjs(data.ends_at));
@@ -56,24 +64,25 @@ export default function EditEventFormNew() {
 
   const onSubmit = async (submitData) => {
     const formData = new FormData();
-    for (const [key, value] of Object.entries({
+    Object.entries({
       ...submitData,
       ...addressData,
-    })) {
+    }).map(([key, value]) => {
       if (key === "starts_at" || key === "ends_at") {
-        formData.append(key, value.format());
-      } else {
-        formData.append(key, value);
+        console.log(key, value.format());
+        return formData.append(key, value.format());
       }
-    }
+      if (key === "main_image" && !value) {
+        return null;
+      }
+      return formData.append(key, value);
+    });
     try {
-      const { data } = await axiosReq.put(`/events/${id}/`, formData);
+      const { data } = await axiosReq.post("/events/", formData);
       navigate(`/events/${data.id}`);
     } catch (err) {
-      console.log(err);
       if (err.response?.status !== 401) {
         setApiErrors(err.response?.data);
-        console.log(apiErrors);
       }
     }
   };
@@ -108,6 +117,31 @@ export default function EditEventFormNew() {
           />
           <FormGroup>
             <Controller
+              name="main_image"
+              control={control}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <MuiFileInput
+                  helperText={error ? error.message : null}
+                  size="small"
+                  error={!!error}
+                  onChange={onChange}
+                  value={value}
+                  fullWidth
+                  type="file"
+                  label="Main Image"
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: <AttachFileIcon />,
+                  }}
+                />
+              )}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Controller
               name="address"
               control={control}
               rules={{
@@ -115,9 +149,7 @@ export default function EditEventFormNew() {
                   (!!address && !!lat && !!long && !!place_id) ||
                   "Please select a valid address from the dropdown",
               }}
-              render={({
-                fieldState: { error },
-              }) => (
+              render={({ fieldState: { error } }) => (
                 /* value and onchange are not passed to this component, as it handles its own values internally
                 and updates the addressData state variable. 
                 validation is done by checking the addressData state variable. */
