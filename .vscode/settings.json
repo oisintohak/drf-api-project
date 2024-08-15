@@ -20,7 +20,7 @@
       "**/core.python*": true,
       "**/CVS": true
    },
-   "files.autoSave": "off",
+   "files.autoSave": "afterDelay",
    "workbench.colorTheme": "Monokai",
    "terminal.integrated.gpuAcceleration": "canvas",
    "editor.defaultFormatter": "HookyQR.beautify",
@@ -32,7 +32,7 @@
    },
    "python.formatting.provider": "none",
    "[javascriptreact]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+      "editor.defaultFormatter": "vscode.typescript-language-features"
    },
    "[html]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode"

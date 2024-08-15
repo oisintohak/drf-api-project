@@ -85,7 +85,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'staticfiles', 'build'),
+            os.path.join(BASE_DIR, 'staticfiles', 'dist'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -164,14 +164,14 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 STATICFILES_DIRS = [
 #    os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'staticfiles', 'build'),
-    os.path.join(BASE_DIR, 'staticfiles', 'build', 'assets'),
+    os.path.join(BASE_DIR, 'staticfiles', 'dist'),
+    os.path.join(BASE_DIR, 'staticfiles', 'dist', 'assets'),
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 # STATIC_ROOT = BASE_DIR / 'staticfiles'
-WHITENOISE_ROOT = BASE_DIR / 'staticfiles' / 'build'
+WHITENOISE_ROOT = BASE_DIR / 'staticfiles' / 'dist'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

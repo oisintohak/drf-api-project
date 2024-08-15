@@ -8,7 +8,7 @@ import CreateEventForm from "./pages/events/CreateEventForm";
 import EventDetail from "./pages/events/EventDetail";
 import EventMap from "./pages/events/EventMap";
 import EditEventForm from "./pages/events/EditEventForm";
-
+import HomePage from "./pages/events/HomePage";
 
 function App() {
   return (
@@ -17,11 +17,12 @@ function App() {
       <NavBar />
       <Stack>
         <Routes>
-          <Route exact path="/" element={<EventMap />} />
+          <Route exact path="/" element={<HomePage />} />
           <Route exact path="/login" element={<LoginForm />} />
           <Route exact path="/register" element={<RegisterForm />} />
-          <Route exact path="/events/:id" element={<EventDetail />} />
+          <Route exact path="/map" element={<EventMap />} />
           <Route exact path="/events" element={<EventList />} />
+          <Route exact path="/events/:id" element={<EventDetail />} />
           <Route exact path="/create-event" element={<CreateEventForm />} />
           <Route exact path="/events/:id/edit" element={<EditEventForm />} />
         </Routes>

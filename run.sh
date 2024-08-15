@@ -1,1 +1,1 @@
-python3 manage.py runserver & cd react-app && npm start
+python3 manage.py runserver & cd frontend && npm run dev

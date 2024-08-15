@@ -24,10 +24,11 @@ class EventFilter(FilterSet):
     starts_before = DateFilter(field_name="starts_at", lookup_expr="date__lte")
     ends_after = DateFilter(field_name="ends_at", lookup_expr="date__gte")
     ends_before = DateFilter(field_name="ends_at", lookup_expr="date__lte")
+    date = DateFilter(field_name="starts_at", lookup_expr="contains")
 
     class Meta:
         model = Event
-        fields = ["lat", "long"]
+        fields = ["lat", "long", "starts_at", "ends_at"]
 
 
 class Paginator(LimitOffsetPagination):
@@ -46,7 +47,14 @@ class EventList(generics.ListCreateAPIView):
     serializer_class = EventSerializer
     pagination_class = Paginator
     filter_backends = [
+        filters.OrderingFilter,
+        filters.SearchFilter,
         DjangoFilterBackend,
+    ]
+    search_fields = [
+        'created_by__username',
+        'address',
+        'title',
     ]
     filterset_class = EventFilter
 

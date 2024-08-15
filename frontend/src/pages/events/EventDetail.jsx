@@ -12,7 +12,7 @@ function EventDetail() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const { data } = await axiosReq.get(`/events/${id}/`);
+        const { data } = await axiosReq.get(`events/${id}/`);
         setEvent(data);
         setLoaded(true);
       } catch (error) {

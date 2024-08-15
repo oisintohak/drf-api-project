@@ -126,9 +126,9 @@ function Event(props) {
         action={isDetail && is_creator ? popup : null}
       />
       <CardMedia
-        sx={{ height: "10rem", objectFit: "contain" }}
+        sx={{ height: "10rem", objectFit: "cover" }}
         component="img"
-        image={main_image}
+        image={main_image || 'default.jpg'}
       />
       <CardContent>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
