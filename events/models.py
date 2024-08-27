@@ -21,6 +21,11 @@ class Event(models.Model):
             f'Starts: {self.starts_at.strftime("%H:%M:%S on %d/%m/%Y")}.'
             f'Ends: {self.ends_at.strftime("%H:%M:%S on %d/%m/%Y")}'
         )
+        
+class EventFavourite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, related_name='event_favourites', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class EventAdmin(models.Model):
