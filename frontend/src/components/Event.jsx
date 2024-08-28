@@ -1,3 +1,5 @@
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Avatar,
@@ -13,16 +15,17 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Link from "@mui/material/Link";
-import Typography from "@mui/material/Typography";
-import * as React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { axiosReq } from "../api/axiosDefaults";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { axiosRes } from "../api/axiosDefaults";
+import { useCurrentUser } from "../contexts/CurrentUserContext";
 import PopperPopup from "./PopperPopup";
 
 function Event(props) {
@@ -35,9 +38,12 @@ function Event(props) {
     address,
     profile_image,
     is_creator,
+    favourite_id,
     isDetail,
     main_image,
+    setEvents
   } = props;
+  const currentUser = useCurrentUser();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
 
@@ -51,10 +57,42 @@ function Event(props) {
 
   const handleDelete = async () => {
     try {
-      await axiosReq.delete(`/events/${id}/`);
+      await axiosRes.delete(`/events/${id}/`);
       navigate("/events");
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const handleFavourite = async () => {
+    try {
+      const { data } = await axiosRes.post("events/event-favourites/", { event: id });
+      setEvents((prevEvents) => ({
+        ...prevEvents,
+        results: prevEvents.results.map((event) => {
+          return event.id === id
+            ? { ...event, favourite_id: data.id }
+            : event;
+        }),
+      }));
+    } catch (err) {
+      // console.log(err);
+    }
+  };
+
+  const handleUnfavourite = async () => {
+    try {
+      await axiosRes.delete(`events/event-favourites/${favourite_id}/`);
+      setEvents((prevEvents) => ({
+        ...prevEvents,
+        results: prevEvents.results.map((event) => {
+          return event.id === id
+            ? { ...event, favourite_id: null }
+            : event;
+        }),
+      }));
+    } catch (err) {
+      // console.log(err);
     }
   };
 
@@ -148,7 +186,23 @@ function Event(props) {
           <Link to={`/events/${id}`} component={NavLink} color="secondary">
             <Button size="small">Learn More</Button>
           </Link>
-        )}
+        )}{
+          currentUser && !is_creator && (<>
+            {favourite_id ? (
+              <IconButton
+                onClick={handleUnfavourite}
+              >
+                <FavoriteIcon />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={handleFavourite}
+              >
+                <FavoriteBorderIcon />
+              </IconButton>
+            )}
+          </>
+          )}
       </CardActions>
     </Card>
   );

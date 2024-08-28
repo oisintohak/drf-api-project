@@ -23,9 +23,13 @@ class Event(models.Model):
         )
         
 class EventFavourite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, related_name='event_favourites', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='event_favourites', on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, related_name='favourites', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = ['user', 'event']
 
 
 class EventAdmin(models.Model):

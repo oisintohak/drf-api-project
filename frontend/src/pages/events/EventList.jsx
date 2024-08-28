@@ -8,16 +8,15 @@ const EventList = (props) => {
   const {
     query,
     date,
+    filter,
   } = props;
   const [events, setEvents] = useState({ results: [] });
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     setLoaded(false)
-    console.log(`query:${query}`)
     const fetchEvents = async () => {
-      console.log('fetching events')
       try {
-        const { data } = await axiosReq.get(`/events/?search=${query}&date=${date}`);
+        const { data } = await axiosReq.get(`/events/?search=${query ? query : ''}&date=${date ? date : ''}${filter ? filter : ''}`);
         setEvents(data);
         setLoaded(true);
       } catch (error) {
@@ -26,10 +25,9 @@ const EventList = (props) => {
     };
     const timer = setTimeout(() => fetchEvents(), 1000)
     return () => {
-      console.log('clearing timeout')
       clearTimeout(timer);
     };
-  }, [query, date]);
+  }, [query, date, filter]);
 
   return loaded ? (
     <Grid container spacing={3} p={3}>
@@ -42,7 +40,7 @@ const EventList = (props) => {
           xl={4}
           key={event.id}
         >
-          <Event {...event} eventlist />
+          <Event {...event} setEvents={setEvents} eventlist />
         </Grid>
       ))}
     </Grid>

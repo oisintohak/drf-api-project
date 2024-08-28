@@ -1,18 +1,14 @@
-from django.db.models import BooleanField, Case, Count, ExpressionWrapper, F, Q, When
+from django.db.models import (BooleanField, Case, Count, ExpressionWrapper, F,
+                              Q, When)
 from django.db.models.functions import Now
-from django_filters.rest_framework import (
-    DateFilter,
-    DjangoFilterBackend,
-    FilterSet,
-    NumberFilter,
-)
-from rest_framework import filters, generics
-from rest_framework.pagination import LimitOffsetPagination
+from django_filters.rest_framework import (DateFilter, DjangoFilterBackend,
+                                           FilterSet, NumberFilter)
+from rest_framework import filters, generics, pagination, permissions
 
-from main.permissions import IsCreatorOrReadOnly
+from main.permissions import IsCreatorOrReadOnly, IsUserOrReadOnly
 
-from .models import Event
-from .serializers import EventSerializer
+from .models import Event, EventFavourite
+from .serializers import EventFavouriteSerializer, EventSerializer
 
 
 class EventFilter(FilterSet):
@@ -25,13 +21,14 @@ class EventFilter(FilterSet):
     ends_after = DateFilter(field_name="ends_at", lookup_expr="date__gte")
     ends_before = DateFilter(field_name="ends_at", lookup_expr="date__lte")
     date = DateFilter(field_name="starts_at", lookup_expr="contains")
+    
 
     class Meta:
         model = Event
-        fields = ["lat", "long", "starts_at", "ends_at"]
+        fields = ["lat", "long", "starts_at", "ends_at", "favourites__user"]
 
 
-class Paginator(LimitOffsetPagination):
+class Paginator(pagination.LimitOffsetPagination):
     default_limit = 50
 
 
@@ -52,9 +49,9 @@ class EventList(generics.ListCreateAPIView):
         DjangoFilterBackend,
     ]
     search_fields = [
-        'created_by__username',
-        'address',
-        'title',
+        "created_by__username",
+        "address",
+        "title",
     ]
     filterset_class = EventFilter
 
@@ -83,3 +80,18 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
     permission_classes = [IsCreatorOrReadOnly]
     serializer_class = EventSerializer
+
+
+class EventFavouriteList(generics.ListCreateAPIView):
+    queryset = EventFavourite.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = EventFavouriteSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class EventFavouriteDetail(generics.RetrieveDestroyAPIView):
+    queryset = EventFavourite.objects.all()
+    permission_classes = [IsUserOrReadOnly]
+    serializer_class = EventFavouriteSerializer

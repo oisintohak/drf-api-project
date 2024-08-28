@@ -1,16 +1,19 @@
-import { Routes, Route } from "react-router-dom";
 import { CssBaseline, Stack } from "@mui/material";
+import { Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar";
-import RegisterForm from "./pages/auth/Register";
+import { useCurrentUser } from "./contexts/CurrentUserContext";
 import LoginForm from "./pages/auth/Login";
-import EventList from "./pages/events/EventList";
+import RegisterForm from "./pages/auth/Register";
 import CreateEventForm from "./pages/events/CreateEventForm";
-import EventDetail from "./pages/events/EventDetail";
-import EventMap from "./pages/events/EventMap";
 import EditEventForm from "./pages/events/EditEventForm";
+import EventDetail from "./pages/events/EventDetail";
+import EventList from "./pages/events/EventList";
+import EventMap from "./pages/events/EventMap";
 import HomePage from "./pages/events/HomePage";
 
 function App() {
+  const currentUser = useCurrentUser();
+  const userId = currentUser?.pk || ""
   return (
     <Stack>
       <CssBaseline />
@@ -22,6 +25,7 @@ function App() {
           <Route exact path="/register" element={<RegisterForm />} />
           <Route exact path="/map" element={<EventMap />} />
           <Route exact path="/events" element={<EventList />} />
+          <Route exact path="/favourites" element={<EventList filter={`&favourites__user=${userId}`} />} />
           <Route exact path="/events/:id" element={<EventDetail />} />
           <Route exact path="/create-event" element={<CreateEventForm />} />
           <Route exact path="/events/:id/edit" element={<EditEventForm />} />

@@ -102,6 +102,21 @@ function NavBar() {
             >
               <Typography variant="body1">Map</Typography>
             </Link>
+            <Link
+              to="/favourites"
+              component={NavLink}
+              sx={{
+                paddingX: 1,
+                textDecoration: "none",
+                color: "white",
+                "&:hover": {
+                  color: "white",
+                },
+              }}
+              color="secondary"
+            >
+              <Typography variant="body1">Favourites</Typography>
+            </Link>
             {/* <SearchInput /> */}
           </Box>
           <Box>
