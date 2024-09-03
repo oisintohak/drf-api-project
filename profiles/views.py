@@ -17,3 +17,6 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
     permission_classes = [IsUserOrReadOnly]
     serializer_class = ProfileSerializer
+    # def post(self):
+    #     print('profile view')
+    #     return super().post(self)
