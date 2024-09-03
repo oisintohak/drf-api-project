@@ -24,6 +24,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import SearchInput from "./SearchInput";
 import FilterMenu from "../pages/events/FilterMenu";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 function NavBar() {
   const theme = useTheme();
@@ -144,6 +145,19 @@ function NavBar() {
             >
               {currentUser ? (
                 <div>
+                  <Link
+                    to={`/profiles/${currentUser?.pk}`}
+                    component={NavLink}
+                    sx={{ textDecoration: "none" }}
+                    color="primary"
+                  >
+                    <MenuItem onClick={handleClose}>
+                      <ListItemIcon>
+                        <AccountCircleIcon />
+                      </ListItemIcon>
+                      My Profile
+                    </MenuItem>
+                  </Link>
                   <Link
                     to="/create-event"
                     component={NavLink}

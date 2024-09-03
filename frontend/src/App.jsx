@@ -10,6 +10,7 @@ import EventDetail from "./pages/events/EventDetail";
 import EventList from "./pages/events/EventList";
 import EventMap from "./pages/events/EventMap";
 import HomePage from "./pages/events/HomePage";
+import ProfilePage from "./pages/profiles/ProfilePage";
 
 function App() {
   const currentUser = useCurrentUser();
@@ -23,6 +24,7 @@ function App() {
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/login" element={<LoginForm />} />
           <Route exact path="/register" element={<RegisterForm />} />
+          <Route exact path="/profiles/:id" element={<ProfilePage />} />
           <Route exact path="/map" element={<EventMap />} />
           <Route exact path="/events" element={<EventList />} />
           <Route exact path="/favourites" element={<EventList filter={`&favourites__user=${userId}`} />} />
