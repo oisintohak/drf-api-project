@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import EventList from "./EventList";
 
-import { Box, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import SearchInput from "../../components/SearchInput";
 
 const HomePage = () => {
@@ -9,18 +9,18 @@ const HomePage = () => {
   const [date, setDate] = useState('');
 
   return (
-    <>
+    <Paper elevation={3} sx={{ margin: 3 }}>
       <SearchInput date={date} query={query} setDate={setDate} setQuery={setQuery} />
-      <Box sx={{ border: "1px solid black", margin: 3, padding: 3 }}>
+      <Box sx={{ margin: 3, padding: 3 }}>
         <Typography variant="h3" sx={{ textAlign: "center", padding: 3 }}>
           {query || date ?
-              "Search Results"
-             :"Popular Events"
+            "Search Results"
+            : "Popular Events"
           }
         </Typography>
         <EventList date={date} query={query} />
       </Box>
-    </>
+    </Paper>
   );
 };
 

@@ -6,7 +6,9 @@ import { Box } from "@mui/material";
 import FilterMenu from "../pages/events/FilterMenu";
 import Divider from '@mui/material/Divider';
 
-import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 
@@ -32,46 +34,20 @@ const SearchInput = (props) => {
       alignItems="center"
       direction="row"
       padding={2}
-    // sx={{
-    //   width: 200,
-    // }}
+
     >
-      {/* <Autocomplete
-        freeSolo
-        options={[]}
-        renderInput={(params) => (
-          <TextField
-            fullWidth
-            size="small"
-            label="Find an event"
-            {...params}
-            InputProps={{
-              ...params.InputProps,
-              style: {
-                color: "white",
-                border: "1px solid white",
-              },
-              //   size: "small",
-            }}
-          />
-        )}
-      /> */}
       <TextField color="primary" size="small" label="Find an event" value={query} onChange={event => setQuery(event.target.value)} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-
-        <MobileDatePicker
-          value={date}
+        <DatePicker
           onChange={value => setDate(value.format('YYYY-MM-DD'))}
+          label="Date"
           slotProps={{
             textField: {
-              size: "small"
-
+              size: "small",
             },
           }}
-        // sx={{width: 3}}
         />
       </LocalizationProvider>
-
     </Stack>
   );
 };

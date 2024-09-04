@@ -34,8 +34,7 @@ const EditProfileForm = () => {
             try {
                 const { data } = await axiosReq.get(`/profiles/${id}/`);
                 if (data.is_user) {
-                    setAddressInitialValue(data.address);
-                    setValue("title", data.bio);
+                    setValue("bio", data.bio);
                     
                 } else {
                     navigate("/");

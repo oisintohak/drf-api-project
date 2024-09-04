@@ -118,7 +118,6 @@ function NavBar() {
             >
               <Typography variant="body1">Favourites</Typography>
             </Link>
-            {/* <SearchInput /> */}
           </Box>
           <Box>
             <IconButton
