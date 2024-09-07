@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.db import IntegrityError
 from datetime import datetime
 import pytz
-from .models import Event, EventImage, Image, EventFavourite
+from .models import *
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -57,23 +57,10 @@ class EventSerializer(DynamicFieldsModelSerializer):
     starts_at = serializers.DateTimeField()
     ends_at = serializers.DateTimeField()
     favourite_id = serializers.SerializerMethodField()
+    attendee_id = serializers.SerializerMethodField()
     # images = EventImageSerializer(many=True, required=False)
     # starts_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
     # ends_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
-
-    
-
-    def get_is_creator(self, obj):
-        request = self.context["request"]
-        return request.user == obj.created_by
-    
-    def get_favourite_id(self, obj):
-        request = self.context["request"]
-        if request.user.is_authenticated:
-            favourite = obj.favourites.filter(user=request.user, event=obj).first()
-            return favourite.id if favourite else None
-        return None
-    
     
     class Meta:
         model = Event
@@ -95,13 +82,33 @@ class EventSerializer(DynamicFieldsModelSerializer):
             "is_over",
             "images",
             "main_image",
-            "favourite_id"
+            "favourite_id",
+            "attendee_id"
         ]
         depth = 3
         optional_fields = [
             "created_by",
             "main_image",
         ]
+
+    def get_is_creator(self, obj):
+        request = self.context["request"]
+        return request.user == obj.created_by
+
+    def get_favourite_id(self, obj):
+        request = self.context["request"]
+        if request.user.is_authenticated:
+            favourite = obj.favourites.filter(user=request.user, event=obj).first()
+            return favourite.id if favourite else None
+        return None
+
+    def get_attendee_id(self, obj):
+        request = self.context["request"]
+        if request.user.is_authenticated:
+            favourite = obj.attendees.filter(user=request.user, event=obj).first()
+            return favourite.id if favourite else None
+        return None
+
 
     # def create(self, validated_data):
     #     print('')
@@ -121,19 +128,33 @@ class ImageSerializer(serializers.ModelSerializer):
         model = Image
 
 
-
 class EventFavouriteSerializer(serializers.ModelSerializer):
-    
 
     class Meta:
         model = EventFavourite
-        fields = ['id', 'created_at', 'event']
-        optional_fields = ['user']
+        fields = ["id", "created_at", "event"]
+        optional_fields = ["user"]
 
     def create(self, validated_data):
         try:
             return super().create(validated_data)
         except IntegrityError:
-            raise serializers.ValidationError({
-                'detail': 'duplicate favourite'
-            })
+            raise serializers.ValidationError({"detail": "duplicate favourite"})
+
+
+class EventAttendeeSerializer(serializers.ModelSerializer):
+    user_id = serializers.ReadOnlyField(source="user.id")
+    profile_image = serializers.ReadOnlyField(source='user.profile.image.url')
+    username = serializers.ReadOnlyField(source="user.username")
+    bio = serializers.ReadOnlyField(source="user.profile.bio")
+
+    class Meta:
+        model = EventAttendee
+        fields = ["id", "created_at", "event", "profile_image", "user_id", "username", "bio"]
+        optional_fields = ["user"]
+
+    def create(self, validated_data):
+        try:
+            return super().create(validated_data)
+        except IntegrityError:
+            raise serializers.ValidationError({"detail": "duplicate favourite"})

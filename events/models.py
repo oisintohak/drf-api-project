@@ -49,9 +49,14 @@ class EventInvite(models.Model):
     attending = models.BooleanField()
 
 
-class EventGuest(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+class EventAttendee(models.Model):
+    user = models.ForeignKey(User, related_name="events_attending", on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, related_name="attendees", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = ['user', 'event']
 
 
 class Image(models.Model):

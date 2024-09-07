@@ -1,5 +1,6 @@
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Avatar,
@@ -39,6 +40,7 @@ function Event(props) {
     profile_image,
     is_creator,
     favourite_id,
+    attendee_id,
     isDetail,
     main_image,
     setEvents
@@ -76,7 +78,7 @@ function Event(props) {
         }),
       }));
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
   };
 
@@ -92,9 +94,43 @@ function Event(props) {
         }),
       }));
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
   };
+
+  const handleAttend =  async () => {
+    console.log('handleAttend')
+    try {
+      const { data } = await axiosRes.post("events/event-attendees/", { event: id });
+      setEvents((prevEvents) => ({
+        ...prevEvents,
+        results: prevEvents.results.map((event) => {
+          return event.id === id
+          ? { ...event, attendee_id: data.id }
+          : event;
+        }),
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  const handleUnattend = async () => {
+    console.log('handleUnattend')
+    try {
+      await axiosRes.delete(`events/event-attendees/${attendee_id}/`);
+      setEvents((prevEvents) => ({
+        ...prevEvents,
+        results: prevEvents.results.map((event) => {
+          return event.id === id
+            ? { ...event, attendee_id: null }
+            : event;
+        }),
+      }));
+    } catch (err) {
+      // console.log(err);
+    }
+  }
+
 
   const deleteDialog = (
     <Dialog
@@ -148,7 +184,7 @@ function Event(props) {
   );
 
   return (
-    <Card sx={{ maxWidth: "20rem" }}>
+    <Card sx={{ maxWidth: isDetail? "20rem": "unset" }}>
       <CardHeader
         avatar={<Avatar src={profile_image} />}
         title={
@@ -184,7 +220,7 @@ function Event(props) {
       <CardActions>
         {!isDetail && (
           <Link to={`/events/${id}`} component={NavLink} color="secondary">
-            <Button size="small">Learn More</Button>
+            <Button size="small">Details</Button>
           </Link>
         )}{
           currentUser && !is_creator && (<>
@@ -192,7 +228,7 @@ function Event(props) {
               <IconButton
                 onClick={handleUnfavourite}
               >
-                <FavoriteIcon />
+                <FavoriteIcon sx={{color: 'pink'}} />
               </IconButton>
             ) : (
               <IconButton
@@ -203,6 +239,21 @@ function Event(props) {
             )}
           </>
           )}
+        {
+          currentUser && (
+            <>
+              {attendee_id ? (
+                <IconButton onClick={handleUnattend} >
+                  <EventAvailableIcon color='success' />
+                </IconButton>
+              ) : (
+                <IconButton onClick={handleAttend} >
+                  <EventAvailableIcon />
+                </IconButton>
+              )}
+            </>
+          )
+        }
       </CardActions>
     </Card>
   );

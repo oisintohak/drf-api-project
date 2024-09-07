@@ -10,7 +10,7 @@ class EventModelAdmin(admin.ModelAdmin):
 
 admin.site.register(Event, EventModelAdmin)
 admin.site.register(EventAdmin)
-admin.site.register(EventGuest)
+admin.site.register(EventAttendee)
 admin.site.register(EventInvite)
 # admin.site.register(SubEvent)
 # admin.site.register(SubEventAdmin)

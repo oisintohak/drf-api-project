@@ -1,14 +1,22 @@
-from django.db.models import (BooleanField, Case, Count, ExpressionWrapper, F,
-                              Q, When)
+from django.db.models import BooleanField, Case, Count, ExpressionWrapper, F, Q, When
 from django.db.models.functions import Now
-from django_filters.rest_framework import (DateFilter, DjangoFilterBackend,
-                                           FilterSet, NumberFilter)
+from django_filters.rest_framework import (
+    DateFilter,
+    DjangoFilterBackend,
+    FilterSet,
+    NumberFilter,
+)
 from rest_framework import filters, generics, pagination, permissions
+
 
 from main.permissions import IsCreatorOrReadOnly, IsUserOrReadOnly
 
-from .models import Event, EventFavourite
-from .serializers import EventFavouriteSerializer, EventSerializer
+from .models import Event, EventFavourite, EventAttendee
+from .serializers import (
+    EventFavouriteSerializer,
+    EventSerializer,
+    EventAttendeeSerializer,
+)
 
 
 class EventFilter(FilterSet):
@@ -21,7 +29,6 @@ class EventFilter(FilterSet):
     ends_after = DateFilter(field_name="ends_at", lookup_expr="date__gte")
     ends_before = DateFilter(field_name="ends_at", lookup_expr="date__lte")
     date = DateFilter(field_name="starts_at", lookup_expr="contains")
-    
 
     class Meta:
         model = Event
@@ -95,3 +102,20 @@ class EventFavouriteDetail(generics.RetrieveDestroyAPIView):
     queryset = EventFavourite.objects.all()
     permission_classes = [IsUserOrReadOnly]
     serializer_class = EventFavouriteSerializer
+
+
+class EventAttendeeList(generics.ListCreateAPIView):
+    queryset = EventAttendee.objects.all()
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = EventAttendeeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class EventAttendeeDetail(generics.RetrieveDestroyAPIView):
+    queryset = EventAttendee.objects.all()
+    permission_classes = [IsUserOrReadOnly]
+    serializer_class = EventAttendeeSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['event']
