@@ -46,7 +46,9 @@ class EventList(generics.ListCreateAPIView):
             When(Q(ends_at__lt=Now()), then=True),
             default=False,
             output_field=BooleanField(),
-        )
+        ),
+        favourite_count=Count('favourites', distinct=True),
+        attendee_count=Count('attendees', distinct=True)
     )
     serializer_class = EventSerializer
     pagination_class = Paginator
@@ -66,6 +68,7 @@ class EventList(generics.ListCreateAPIView):
         serializer.save(created_by=self.request.user)
 
     def get_serializer(self, *args, **kwargs):
+        print(self.queryset[0].favourite_count)
         # https://stackoverflow.com/a/31979444
         serializer_class = self.get_serializer_class()
         fields = None
@@ -108,6 +111,8 @@ class EventAttendeeList(generics.ListCreateAPIView):
     queryset = EventAttendee.objects.all()
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = EventAttendeeSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['event']
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -117,5 +122,3 @@ class EventAttendeeDetail(generics.RetrieveDestroyAPIView):
     queryset = EventAttendee.objects.all()
     permission_classes = [IsUserOrReadOnly]
     serializer_class = EventAttendeeSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['event']

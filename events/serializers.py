@@ -58,6 +58,8 @@ class EventSerializer(DynamicFieldsModelSerializer):
     ends_at = serializers.DateTimeField()
     favourite_id = serializers.SerializerMethodField()
     attendee_id = serializers.SerializerMethodField()
+    favourite_count = serializers.ReadOnlyField()
+    attendee_count = serializers.ReadOnlyField()
     # images = EventImageSerializer(many=True, required=False)
     # starts_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
     # ends_at = serializers.DateTimeField(format="%H:%M:%S on %d/%m/%Y - %Z")
@@ -83,7 +85,9 @@ class EventSerializer(DynamicFieldsModelSerializer):
             "images",
             "main_image",
             "favourite_id",
-            "attendee_id"
+            "attendee_id",
+            "favourite_count",
+            "attendee_count"
         ]
         depth = 3
         optional_fields = [

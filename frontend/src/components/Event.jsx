@@ -4,6 +4,7 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Avatar,
+  Badge,
   CardHeader,
   Divider,
   IconButton,
@@ -41,6 +42,8 @@ function Event(props) {
     is_creator,
     favourite_id,
     attendee_id,
+    favourite_count,
+    attendee_count,
     isDetail,
     main_image,
     setEvents
@@ -73,7 +76,7 @@ function Event(props) {
         ...prevEvents,
         results: prevEvents.results.map((event) => {
           return event.id === id
-            ? { ...event, favourite_id: data.id }
+            ? { ...event, favourite_id: data.id, favourite_count: event.favourite_count + 1 }
             : event;
         }),
       }));
@@ -89,7 +92,7 @@ function Event(props) {
         ...prevEvents,
         results: prevEvents.results.map((event) => {
           return event.id === id
-            ? { ...event, favourite_id: null }
+            ? { ...event, favourite_id: null, favourite_count: event.favourite_count - 1 }
             : event;
         }),
       }));
@@ -106,7 +109,7 @@ function Event(props) {
         ...prevEvents,
         results: prevEvents.results.map((event) => {
           return event.id === id
-          ? { ...event, attendee_id: data.id }
+          ? { ...event, attendee_id: data.id, attendee_count: event.attendee_count + 1 }
           : event;
         }),
       }));
@@ -122,7 +125,7 @@ function Event(props) {
         ...prevEvents,
         results: prevEvents.results.map((event) => {
           return event.id === id
-            ? { ...event, attendee_id: null }
+            ? { ...event, attendee_id: null, attendee_count: event.attendee_count -1 }
             : event;
         }),
       }));
@@ -228,13 +231,17 @@ function Event(props) {
               <IconButton
                 onClick={handleUnfavourite}
               >
+                <Badge badgeContent={favourite_count} color="primary">
                 <FavoriteIcon sx={{color: 'pink'}} />
+                </Badge>
               </IconButton>
             ) : (
               <IconButton
                 onClick={handleFavourite}
               >
+                <Badge badgeContent={favourite_count} color="primary">
                 <FavoriteBorderIcon />
+                </Badge>
               </IconButton>
             )}
           </>
@@ -244,11 +251,15 @@ function Event(props) {
             <>
               {attendee_id ? (
                 <IconButton onClick={handleUnattend} >
+                <Badge badgeContent={attendee_count} color="primary">
                   <EventAvailableIcon color='success' />
+                  </Badge>
                 </IconButton>
               ) : (
                 <IconButton onClick={handleAttend} >
+                <Badge badgeContent={attendee_count} color="primary">
                   <EventAvailableIcon />
+                  </Badge>
                 </IconButton>
               )}
             </>

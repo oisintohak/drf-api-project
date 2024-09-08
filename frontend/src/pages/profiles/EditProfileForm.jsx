@@ -13,11 +13,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Container, Stack, Typography } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import { MuiFileInput } from "mui-file-input";
+import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
 
 
 const EditProfileForm = () => {
 
-
+    const setCurrentUser = useSetCurrentUser()
     const navigate = useNavigate();
     const { id } = useParams();
     const { control, handleSubmit, setValue, getValues } = useForm({
@@ -58,6 +59,10 @@ const EditProfileForm = () => {
         });
         try {
             const { data } = await axiosReq.put(`/profiles/${id}/`, formData);
+            setCurrentUser((currentUser) => ({
+                ...currentUser,
+                profile_image: data.image,
+              }));
             navigate(`/profiles/${data.id}`);
         } catch (err) {
             if (err.response?.status !== 401) {

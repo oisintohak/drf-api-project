@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Card, CardContent, Paper, Stack } from "@mui/material";
+import { NavLink, useParams } from "react-router-dom";
+import { Card, CardContent, Link, Paper, Stack } from "@mui/material";
 import Event from "../../components/Event";
 import { axiosReq } from "../../api/axiosDefaults";
 import EventSkeleton from "./EventSkeleton";
@@ -30,7 +30,7 @@ function EventDetail() {
         // console.log(attendees.results)
         setEvent({ results: [event] });
         setAttendees(data);
-        
+
         setLoaded(true);
       } catch (error) {
         console.log(error);
@@ -41,10 +41,10 @@ function EventDetail() {
 
   useEffect(() => {
     console.log(attendees)
-  
+
   }, [attendees])
-  
- 
+
+
   return (
     <Paper elevation={3} sx={{ margin: 3 }}>
       <Stack direction='row' spacing={2} p={3} justifyContent='center' alignItems='center'>
@@ -53,22 +53,21 @@ function EventDetail() {
             <Event {...event.results[0]} setEvents={setEvent} isDetail />
             {
               attendees.results.length > 0 &&
-
-              <Card sx={{width: '20rem'}}>
-                
-                
+              <Card sx={{ width: '20rem' }}>
                 <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-          Attendees
-        </Typography>
+                  <Typography gutterBottom variant="h5" component="div">
+                    Attendees
+                  </Typography>
                   <List>
-
                     {attendees.results.map((attendee) => (
-                      <>
-                      
+                      <Link
+                        to={`/events/${id}/edit`}
+                        component={NavLink}
+                        color="secondary"
+                      >
                         <ListItem alignItems="flex-start">
                           <ListItemAvatar>
-                            <Avatar alt="User Profile Image" src={attendee.profile_image}/>
+                            <Avatar alt="User Profile Image" src={attendee.profile_image} />
                           </ListItemAvatar>
                           <ListItemText
                             primary={attendee.username}
@@ -87,11 +86,8 @@ function EventDetail() {
                           />
                         </ListItem>
                         <Divider variant="inset" component="li" />
-                      </>
-
+                      </Link>
                     ))}
-
-
                   </List>
                 </CardContent>
               </Card>
