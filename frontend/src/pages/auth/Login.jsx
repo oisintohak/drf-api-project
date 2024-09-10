@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { axiosRes } from "../../api/axiosDefaults";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
@@ -29,7 +30,7 @@ export default function LoginForm() {
   useEffect(() => {
     for (const [field, messages] of Object.entries(apiErrors)) {
       const types = {};
-      for (let i = 0; i < messages.length; i+=1) {
+      for (let i = 0; i < messages.length; i += 1) {
         types[`server_error_${i}`] = messages[i];
       }
       const fieldName = ["username", "password"].includes(field)
@@ -46,22 +47,34 @@ export default function LoginForm() {
 
     formData.append("username", submitData.username);
     formData.append("password", submitData.password);
-    try {
-      const { data } = await axios.post("auth/login/", formData);
-      setCurrentUser(data.user);
-      setTokenTimestamp(data);
-      navigate(-1);
-    } catch (err) {
-      if (err.response?.status !== 400) {
-        setApiErrors({
-          [`server_error_${err.response.status}`]: [
-            `Server Error: ${err.response.statusText}. Please try again.`,
-          ],
-        });
-      } else {
-        setApiErrors(err.response?.data);
-      }
-    }
+    // try {
+    const { data: loginResponse } = await axios.post("auth/login/", formData);
+    
+    console.log(loginResponse)
+    const { data } = await axiosRes.get("/auth/user/");
+    console.log(data)
+
+    // const { data: user } = await axios.get('auth/user/', {
+    //   headers: {
+    //     'Authorization': `Token ${data.key}`
+    //   }
+    // })
+    // console.log(user)
+    // setCurrentUser(user.user);
+    setTokenTimestamp(user);
+    navigate(-1);
+    // } catch (err) {
+    //   console.log(err)
+    //   if (err.response?.status !== 400) {
+    //     setApiErrors({
+    //       [`server_error_${err.response.status}`]: [
+    //         `Server Error: ${err.response.statusText}. Please try again.`,
+    //       ],
+    //     });
+    //   } else {
+    //     setApiErrors(err.response?.data);
+    //   }
+    // }
   };
 
   return (

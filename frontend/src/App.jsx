@@ -13,6 +13,7 @@ import HomePage from "./pages/events/HomePage";
 import ProfilePage from "./pages/profiles/ProfilePage";
 import EditProfileForm from "./pages/profiles/EditProfileForm";
 
+
 function App() {
   const currentUser = useCurrentUser();
   const userId = currentUser?.pk || ""
@@ -20,7 +21,7 @@ function App() {
     <Stack>
       <CssBaseline />
       <NavBar />
-      <Stack>
+      <Stack sx={{mt: 7}}>
         <Routes>
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/login" element={<LoginForm />} />
@@ -36,6 +37,7 @@ function App() {
         </Routes>
       </Stack>
     </Stack>
+
   );
 }
 
