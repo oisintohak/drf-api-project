@@ -32,7 +32,7 @@
    },
    "python.formatting.provider": "none",
    "[javascriptreact]": {
-      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+      "editor.defaultFormatter": "vscode.typescript-language-features"
    },
    "[html]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode"

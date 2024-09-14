@@ -62,13 +62,17 @@ class EventList(generics.ListCreateAPIView):
         "address",
         "title",
     ]
+    ordering_fields = [
+        'likes_count',
+        'comments_count',
+        'likes__created_at',
+    ]
     filterset_class = EventFilter
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
     def get_serializer(self, *args, **kwargs):
-        print(self.queryset[0].favourite_count)
         # https://stackoverflow.com/a/31979444
         serializer_class = self.get_serializer_class()
         fields = None
