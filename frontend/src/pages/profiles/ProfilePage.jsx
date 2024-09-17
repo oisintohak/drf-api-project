@@ -43,7 +43,6 @@ const ProfilePage = () => {
             <Link
               to={`/profiles/${id}/edit`}
               component={NavLink}
-              color="secondary"
             >
               Edit
             </Link>

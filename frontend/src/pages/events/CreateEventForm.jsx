@@ -1,5 +1,5 @@
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import { Container, Stack, Typography } from "@mui/material";
+import { Container, Paper, Stack, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
@@ -60,7 +60,7 @@ export default function CreateEventForm() {
   };
 
   return (
-    <Container>
+    <Paper elevation={3} sx={{ margin: 3, px: 4 }}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Stack
           spacing={3}
@@ -68,8 +68,10 @@ export default function CreateEventForm() {
           component="form"
           noValidate
           py={3}
+          justifyContent="center"
+          alignItems="center"
         >
-          <Typography variant="h3">Create a new event:</Typography>
+          <Typography variant="h5">Create a new event:</Typography>
           <FormGroup>
             <Controller
               name="title"
@@ -221,6 +223,6 @@ export default function CreateEventForm() {
           </Typography>
         )}
       </LocalizationProvider>
-    </Container>
+    </Paper>
   );
 }

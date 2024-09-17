@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
-import { Container, Stack, Typography } from "@mui/material";
+import { Container, Paper, Stack, Typography } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import GooglePlacesAutocomplete from "./GooglePlacesAutocomplete";
 import { MuiFileInput } from "mui-file-input";
@@ -88,7 +88,7 @@ export default function EditEventFormNew() {
   };
 
   return (
-    <Container>
+    <Paper elevation={3} sx={{ margin: 3, px: 4 }}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Stack
           spacing={3}
@@ -96,8 +96,10 @@ export default function EditEventFormNew() {
           component="form"
           noValidate
           py={3}
+          justifyContent="center"
+          alignItems="center"
         >
-          <Typography variant="h3">Edit Event:</Typography>
+          <Typography variant="h5">Edit Event:</Typography>
           <Controller
             name="title"
             control={control}
@@ -109,7 +111,6 @@ export default function EditEventFormNew() {
                 error={!!error}
                 onChange={onChange}
                 value={value}
-                fullWidth
                 label="title"
                 variant="outlined"
               />
@@ -244,6 +245,6 @@ export default function EditEventFormNew() {
           </Typography>
         )}
       </LocalizationProvider>
-    </Container>
+    </Paper>
   );
 }

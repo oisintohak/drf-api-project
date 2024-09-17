@@ -6,7 +6,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-import { Container, FormHelperText, Stack, Typography } from "@mui/material";
+import { Paper, FormHelperText, Stack, Typography } from "@mui/material";
 import { ErrorMessage } from "@hookform/error-message";
 import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
 import { setTokenTimestamp } from "../../utils/utils";
@@ -47,46 +47,37 @@ export default function LoginForm() {
 
     formData.append("username", submitData.username);
     formData.append("password", submitData.password);
-    // try {
-    const { data: loginResponse } = await axios.post("auth/login/", formData);
-    
-    console.log(loginResponse)
-    const { data } = await axiosRes.get("/auth/user/");
-    console.log(data)
-
-    // const { data: user } = await axios.get('auth/user/', {
-    //   headers: {
-    //     'Authorization': `Token ${data.key}`
-    //   }
-    // })
-    // console.log(user)
-    // setCurrentUser(user.user);
-    setTokenTimestamp(user);
-    navigate(-1);
-    // } catch (err) {
-    //   console.log(err)
-    //   if (err.response?.status !== 400) {
-    //     setApiErrors({
-    //       [`server_error_${err.response.status}`]: [
-    //         `Server Error: ${err.response.statusText}. Please try again.`,
-    //       ],
-    //     });
-    //   } else {
-    //     setApiErrors(err.response?.data);
-    //   }
-    // }
+    try {
+      const { data } = await axios.post("auth/login/", formData);
+      setCurrentUser(data.user);
+      setTokenTimestamp(data);
+      navigate(-1);
+    } catch (err) {
+      console.log(err)
+      if (err.response?.status !== 400) {
+        setApiErrors({
+          [`server_error_${err.response.status}`]: [
+            `Server Error: ${err.response.statusText}. Please try again.`,
+          ],
+        });
+      } else {
+        setApiErrors(err.response?.data);
+      }
+    }
   };
 
   return (
-    <Container>
+    <Paper elevation={3} sx={{ margin: 3, px: 4 }}>
       <Stack
         spacing={3}
         onSubmit={handleSubmit(onSubmit)}
         component="form"
         noValidate
         py={3}
+        justifyContent="center"
+        alignItems="center"
       >
-        <Typography variant="h6">Log in to your account:</Typography>
+        <Typography variant="h5">Log in to your account:</Typography>
         <Controller
           name="username"
           control={control}
@@ -114,7 +105,6 @@ export default function LoginForm() {
               error={!!error}
               onChange={onChange}
               value={value}
-              fullWidth
               label="username"
               variant="outlined"
             />
@@ -149,7 +139,6 @@ export default function LoginForm() {
               error={!!error}
               onChange={onChange}
               value={value}
-              fullWidth
               label="Password"
               variant="outlined"
               type="password"
@@ -185,6 +174,6 @@ export default function LoginForm() {
           Submit
         </Button>
       </Stack>
-    </Container>
+    </Paper>
   );
 }

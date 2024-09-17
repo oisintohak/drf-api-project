@@ -10,7 +10,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
-import { Container, Stack, Typography } from "@mui/material";
+import { Container, Paper, Stack, Typography } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import { MuiFileInput } from "mui-file-input";
 import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
@@ -72,7 +72,7 @@ const EditProfileForm = () => {
     };
 
     return (
-        <Container>
+        <Paper elevation={3} sx={{ margin: 3, px: 4 }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Stack
                     spacing={3}
@@ -80,8 +80,11 @@ const EditProfileForm = () => {
                     component="form"
                     noValidate
                     py={3}
+                    justifyContent="center"
+                    alignItems="center"
+          
                 >
-                    <Typography variant="h3">Edit Profile:</Typography>
+                    <Typography variant="h5">Edit Profile:</Typography>
                     <Controller
                         name="bio"
                         control={control}
@@ -92,7 +95,6 @@ const EditProfileForm = () => {
                                 error={!!error}
                                 onChange={onChange}
                                 value={value}
-                                fullWidth
                                 label="bio"
                                 variant="outlined"
                             />
@@ -112,7 +114,6 @@ const EditProfileForm = () => {
                                     error={!!error}
                                     onChange={onChange}
                                     value={value}
-                                    fullWidth
                                     type="file"
                                     label="Image"
                                     variant="outlined"
@@ -136,7 +137,7 @@ const EditProfileForm = () => {
                 </Stack>
                 
             </LocalizationProvider>
-        </Container>
+        </Paper>
     );
 }
 

@@ -191,7 +191,6 @@ export default function GooglePlacesAutocomplete(props) {
             error={error}
             size={size}
             label="Add a location"
-            fullWidth
           />
         )}
         renderOption={(optionProps, option) => {

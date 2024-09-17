@@ -46,14 +46,14 @@ function EventDetail() {
 
 
   return (
-    <Paper elevation={3} sx={{ margin: 3 }}>
-      <Stack direction='row' spacing={2} p={3} justifyContent='center' alignItems='center'>
+    //<Paper elevation={3} sx={{ margin: 3 }}>
+      <Stack direction='row' spacing={2} p={3} justifyContent='center' alignItems='stretch'>
         {loaded ? (
           <>
             <Event {...event.results[0]} setEvents={setEvent} isDetail />
             {
               attendees.results.length > 0 &&
-              <Card sx={{ width: '20rem' }}>
+              <Card elevation={24} sx={{ width: '20rem' }}>
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     Attendees
@@ -61,9 +61,9 @@ function EventDetail() {
                   <List>
                     {attendees.results.map((attendee) => (
                       <Link
+                        key={attendee.id}
                         to={`/events/${id}/edit`}
                         component={NavLink}
-                        color="secondary"
                       >
                         <ListItem alignItems="flex-start">
                           <ListItemAvatar>
@@ -97,7 +97,7 @@ function EventDetail() {
           <EventSkeleton />
         )}
       </Stack>
-    </Paper>
+    //</Paper>
   );
 }
 

@@ -1,5 +1,5 @@
 import { ErrorMessage } from "@hookform/error-message";
-import { Container, FormHelperText, Stack, Typography } from "@mui/material";
+import { Container, FormHelperText, Paper, Stack, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
@@ -57,15 +57,17 @@ export default function RegisterForm() {
   };
 
   return (
-    <Container>
+    <Paper elevation={3} sx={{ margin: 3, px: 4 }}>
       <Stack
         spacing={3}
         onSubmit={handleSubmit(onSubmit)}
         component="form"
         noValidate
         py={3}
+        justifyContent="center"
+        alignItems="center"
       >
-        <Typography variant="h6">Register a new account:</Typography>
+        <Typography variant="h5">Register a new account:</Typography>
         <Controller
           name="username"
           control={control}
@@ -93,7 +95,6 @@ export default function RegisterForm() {
               error={!!error}
               onChange={onChange}
               value={value}
-              fullWidth
               label="username"
               variant="outlined"
             />
@@ -128,7 +129,6 @@ export default function RegisterForm() {
               error={!!error}
               onChange={onChange}
               value={value}
-              fullWidth
               label="Password"
               variant="outlined"
               type="password"
@@ -162,7 +162,6 @@ export default function RegisterForm() {
               error={!!error}
               onChange={onChange}
               value={value}
-              fullWidth
               label="Confirm Password"
               variant="outlined"
               type="password"
@@ -199,6 +198,6 @@ export default function RegisterForm() {
           Submit
         </Button>
       </Stack>
-    </Container>
+    </Paper>
   );
 }

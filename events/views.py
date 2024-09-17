@@ -91,7 +91,15 @@ class EventList(generics.ListCreateAPIView):
 
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Event.objects.all()
+    queryset = Event.objects.annotate(
+        is_over=Case(
+            When(Q(ends_at__lt=Now()), then=True),
+            default=False,
+            output_field=BooleanField(),
+        ),
+        favourite_count=Count('favourites', distinct=True),
+        attendee_count=Count('attendees', distinct=True)
+    )
     permission_classes = [IsCreatorOrReadOnly]
     serializer_class = EventSerializer
 

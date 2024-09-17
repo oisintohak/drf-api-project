@@ -167,16 +167,16 @@ function Event(props) {
       popup={
         <MenuList>
           <MenuItem>
-            <Link
+            <Button
               to={`/events/${id}/edit`}
               component={NavLink}
-              color="secondary"
+              
             >
               Edit
-            </Link>
+            </Button>
           </MenuItem>
           <MenuItem>
-            <Button onClick={handleClickOpen} color="secondary">
+            <Button onClick={handleClickOpen} >
               Delete
             </Button>
             {deleteDialog}
@@ -187,7 +187,7 @@ function Event(props) {
   );
 
   return (
-    <Card sx={{ maxWidth: isDetail? "20rem": "unset" }}>
+    <Card elevation={24} sx={{ maxWidth: isDetail? "20rem": "unset" }}>
       <CardHeader
         avatar={<Avatar src={profile_image} />}
         title={
@@ -222,8 +222,8 @@ function Event(props) {
       </CardContent>
       <CardActions>
         {!isDetail && (
-          <Link to={`/events/${id}`} component={NavLink} color="secondary">
-            <Button size="small">Details</Button>
+          <Link to={`/events/${id}`} component={NavLink} >
+            <Button  size="small">Details</Button>
           </Link>
         )}{
           currentUser && !is_creator && (<>

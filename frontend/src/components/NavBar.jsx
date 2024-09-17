@@ -57,7 +57,7 @@ function NavBar() {
 
   return (
 
-    <AppBar color="inherit">
+    <AppBar>
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Link
           to="/"
