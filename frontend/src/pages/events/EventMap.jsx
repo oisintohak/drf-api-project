@@ -5,11 +5,16 @@ import useSupercluster from "use-supercluster";
 import { axiosReq } from "../../api/axiosDefaults";
 import MapMarkerPopup from "./MapMarkerPopup";
 import FilterMenu from "./FilterMenu";
+import { useLocation } from "../../contexts/LocationContext";
 
 function EventMap() {
+  const locationData = useLocation();
+  useEffect(() => {
+    console.log(locationData.latitude)
+  }, [locationData])
   const mapRef = useRef();
   const [mapBounds, setMapBounds] = useState([]);
-  const [mapZoom, setMapZoom] = useState(10);
+  const [mapZoom, setMapZoom] = useState(1);
   const [points, setPoints] = useState([]);
   const [dateFilters, setDateFilters] = useState({
     starts_after: null,
@@ -47,7 +52,7 @@ function EventMap() {
             }))
           );
           // console.log(data);
-        } 
+        }
         catch (error) {
           console.log(error);
         }
@@ -64,8 +69,8 @@ function EventMap() {
 
   return (
     <Box>
-      <div
-        style={{
+      <Box
+        sx={{
           position: "relative",
           zIndex: 10,
           marginTop: "1rem",
@@ -73,16 +78,16 @@ function EventMap() {
         }}
       >
         <FilterMenu dateFilters={dateFilters} setDateFilters={setDateFilters} />
-      </div>
+      </Box>
       <GoogleMapReact
-        style={{ position: "unset" }}
+        style={{ position: "static"}}
         bootstrapURLKeys={{
           key: import.meta.env.VITE_GMAPS_API_KEY
             ? import.meta.env.VITE_GMAPS_API_KEY
             : window.REACT_APP_GMAPS_API_KEY,
         }}
-        defaultCenter={{ lat: 53.41291, lng: -8.24389 }}
-        defaultZoom={8}
+        defaultCenter={{ lat: locationData.latitude ? locationData.latitude : 5, lng: locationData.longitude ? locationData.longitude : -2.24389 }}
+        defaultZoom={3}
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map }) => {
           mapRef.current = map;

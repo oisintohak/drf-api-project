@@ -1,6 +1,6 @@
 // Popper with ClickAwayListener adapted from: https://mui.com/material-ui/react-menu/#menulist-composition
 import TuneIcon from "@mui/icons-material/Tune";
-import { Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import Button from "@mui/material/Button";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
@@ -40,20 +40,14 @@ function FilterMenu(props) {
     if (value) {
       console.log(value.format());
       setDateFilters((prevState) => ({
-          ...prevState,
-          [field]: value,
-        }));
+        ...prevState,
+        [field]: value,
+      }));
     }
   };
   return (
     <div>
       <Button
-        sx={{
-          textTransform: "none",
-          backgroundColor: "white",
-          color: "#222",
-          "&:hover": { backgroundColor: "white", color: "#000" },
-        }}
         ref={anchorRef}
         id="composition-button"
         aria-controls={open ? "composition-menu" : undefined}
@@ -61,6 +55,7 @@ function FilterMenu(props) {
         aria-haspopup="true"
         onClick={handleToggle}
         startIcon={<TuneIcon />}
+        variant="contained"
       >
         Filter
       </Button>
@@ -80,55 +75,60 @@ function FilterMenu(props) {
                 placement === "bottom-start" ? "left top" : "left bottom",
             }}
           >
-            <Paper sx={{ background: "red" }}>
+            <div>
+
               <ClickAwayListener onClickAway={handleClose}>
-                <Stack
-                  spacing={3}
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                  }}
-                  component="form"
-                  noValidate
-                  sx={{ background: "white", p: 3, minWidth: "300px", width: "100%" }}
-                >
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <MobileDatePicker
-                      value={dateFilters.starts_before || null}
-                      onChange={handleChange("starts_before")}
-                      format="DD-MM-YYYY"
-                      name="starts_before"
-                      size="small"
-                      label="Starts Before"
-                    />
-                    <MobileDatePicker
-                      value={dateFilters.ends_before || null}
-                      onChange={handleChange("ends_before")}
-                      format="DD-MM-YYYY"
-                      name="ends_before"
-                      size="small"
-                      label="Ends Before"
-                    />
-                    <MobileDatePicker
-                      value={dateFilters.starts_after || null}
-                      onChange={handleChange("starts_after")}
-                      format="DD-MM-YYYY"
-                      name="starts_after"
-                      size="small"
-                      label="Starts After"
-                    />
-                    <MobileDatePicker
-                      value={dateFilters.ends_after || null}
-                      onChange={handleChange("ends_after")}
-                      format="DD-MM-YYYY"
-                      name="ends_after"
-                      size="small"
-                      label="Ends After"
-                    />
-                    <Button type="submit">Submit</Button>
-                  </LocalizationProvider>
-                </Stack>
+                <Paper elevation={3} sx={{ margin: 0, px: 4 }}>
+                  <Stack
+                    paddingY={3}
+                    spacing={3}
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                    }}
+                    component="form"
+                    noValidate
+                  >
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <MobileDatePicker
+                        value={dateFilters.starts_before || null}
+                        onChange={handleChange("starts_before")}
+                        format="DD-MM-YYYY"
+                        name="starts_before"
+                        size="small"
+                        label="Starts Before"
+                      />
+                      <MobileDatePicker
+                        value={dateFilters.ends_before || null}
+                        onChange={handleChange("ends_before")}
+                        format="DD-MM-YYYY"
+                        name="ends_before"
+                        size="small"
+                        label="Ends Before"
+                      />
+                      <MobileDatePicker
+                        value={dateFilters.starts_after || null}
+                        onChange={handleChange("starts_after")}
+                        format="DD-MM-YYYY"
+                        name="starts_after"
+                        size="small"
+                        label="Starts After"
+                      />
+                      <MobileDatePicker
+                        value={dateFilters.ends_after || null}
+                        onChange={handleChange("ends_after")}
+                        format="DD-MM-YYYY"
+                        name="ends_after"
+                        size="small"
+                        label="Ends After"
+                      />
+                      <Button
+                        variant="contained"
+                        type="submit">Submit</Button>
+                    </LocalizationProvider>
+                  </Stack>
+                </Paper>
               </ClickAwayListener>
-            </Paper>
+            </div>
           </Grow>
         )}
       </Popper>

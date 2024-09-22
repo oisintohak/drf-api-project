@@ -28,11 +28,11 @@
       "editor.defaultFormatter": "mikoz.black-py"
    },
    "[javascript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
    },
    "python.formatting.provider": "none",
    "[javascriptreact]": {
-      "editor.defaultFormatter": "vscode.typescript-language-features"
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
    },
    "[html]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode"

@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { axiosReq, axiosRes } from "../api/axiosDefaults";
 import { removeTokenTimestamp, shouldRefreshToken } from "../utils/utils";
 
-export const CurrentUserContext = createContext();
-export const SetCurrentUserContext = createContext();
+const CurrentUserContext = createContext();
+const SetCurrentUserContext = createContext();
 
 export const useCurrentUser = () => useContext(CurrentUserContext);
 export const useSetCurrentUser = () => useContext(SetCurrentUserContext);

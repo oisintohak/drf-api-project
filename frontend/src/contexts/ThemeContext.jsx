@@ -7,7 +7,7 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 import { yellow, teal, grey, blueGrey } from '@mui/material/colors';
 
 
-const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
+const ColorModeContext = React.createContext({ toggleColorMode: () => null });
 export const useColorModeContext = () => React.useContext(ColorModeContext)
 
 export function ThemeToggleProvider({ children }) {
@@ -15,7 +15,6 @@ export function ThemeToggleProvider({ children }) {
   const [mode, setMode] = useLocalStorage('colorMode', '');
   const colorMode = {
     toggleColorMode: () => {
-      console.log('toggle')
       setMode((prevMode) => {
         console.log(`prevMode: ${prevMode}`)
         return prevMode === 'light' ? 'dark' : 'light'
