@@ -1,16 +1,77 @@
-import { expect, test } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
-import NavBar from '../../src/components/NavBar'
+import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
+import { http, HttpResponse } from "msw";
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import { describe, expect, it } from "vitest";
+import NavBar from "../../src/components/NavBar";
+import { CurrentUserProvider } from "../../src/contexts/CurrentUserContext";
+import { server } from "../mocks/server";
 
-test('Logo text is rendered', async () => {
-  render(
-    <NavBar />
-  )
+describe("NavBar", () => {
+  const renderNavBar = () => {
+    render(
+      <BrowserRouter>
+        <CurrentUserProvider>
+          <NavBar />
+        </CurrentUserProvider>
+      </BrowserRouter>
+    );
+    return {
+      logoText: screen.getByRole("heading", { name: "Eventually" }),
+      accountToggleButton: screen.getByRole("button", { name: "account" }),
+      getLinks: async () => screen.findAllByRole("link"),
+      getLink: async (label) => screen.findByRole("link", { name: label }),
+      user: userEvent.setup(),
+    };
+  };
+  it("should render the site name", () => {
+    const { logoText } = renderNavBar();
 
-  const logoText = screen.getByRole('heading')
-
-  expect(logoText).toHaveAccessibleName('Eventually')
-
+    expect(logoText).toBeInTheDocument();
+  });
   
-})
+  it.each(["profile", "create event", "logout"])(
+    "should render the %s link in the account menu when logged in",
+    async (label) => {
+      const { accountToggleButton, user, getLink} = renderNavBar();
+      await user.click(accountToggleButton);
+
+      const link = await getLink(label);
+      expect(link).toBeInTheDocument();
+    }
+  );
+  it.each(["login", "register"])(
+    "should render the %s link in the account menu when not logged in",
+    async (label) => {
+      server.use(
+        http.get("api/auth/user/", () => {
+          return new HttpResponse(
+            { detail: "Authentication credentials were not provided." },
+            { status: 401 }
+          );
+        })
+      );
+      server.use(
+        http.get("api/auth/token/refresh/", () => {
+          return new HttpResponse(
+            {"detail":"No valid refresh token found.","code":"token_not_valid"},
+            { status: 401 }
+          );
+        })
+      );
+
+      const { accountToggleButton, user, getLink } = renderNavBar();
+      await user.click(accountToggleButton);
+
+      const link = await getLink(label);
+
+      expect(link).toBeInTheDocument();
+    }
+  );
+  it("should render the favourites link when logged in", async () => {
+    const { getLink } = renderNavBar();
+    expect(await getLink("favourites")).toBeInTheDocument();
+  });
+  
+});

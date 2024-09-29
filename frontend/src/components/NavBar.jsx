@@ -23,13 +23,10 @@ import {
 import { axiosReq } from "../api/axiosDefaults";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useColorModeContext } from "../contexts/ThemeContext";
 import Brightness7 from "@mui/icons-material/Brightness7";
 import Brightness4 from "@mui/icons-material/Brightness4";
-
-
-
 
 function NavBar() {
   const colorMode = useColorModeContext();
@@ -56,25 +53,22 @@ function NavBar() {
   };
 
   return (
-
     <AppBar>
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Link
-          to="/"
-          component={NavLink}
-          color="text.primary"
-        >
-          <Typography variant="h5">
-            E{!isSmallScreen && "ventually"}
-          </Typography>
+        <Link to="/" component={NavLink} color="text.primary">
+          <Typography variant="h5">E{!isSmallScreen && "ventually"}</Typography>
         </Link>
         <Stack
-          direction="row" alignItems="center" spacing={2} divider={<Divider orientation="vertical" flexItem />}
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          divider={<Divider orientation="vertical" flexItem />}
         >
           <Link
             to="/events"
             component={NavLink}
             color="text.primary"
+            aria-label="events"
           >
             <Typography variant="body1">Events</Typography>
           </Link>
@@ -82,36 +76,47 @@ function NavBar() {
             to="/map"
             component={NavLink}
             color="text.primary"
+            aria-label="map"
           >
             <Typography variant="body1">Map</Typography>
           </Link>
-          <Link
-            to="/favourites"
-            component={NavLink}
-            color="text.primary"
-          >
-            <Typography variant="body1">Favourites</Typography>
-          </Link>
+          {currentUser && (
+            <Link
+              to="/favourites"
+              component={NavLink}
+              color="text.primary"
+              aria-label="favourites"
+            >
+              <Typography variant="body1">Favourites</Typography>
+            </Link>
+          )}
         </Stack>
         <Stack
-          direction="row" alignItems="center" spacing={2} divider={<Divider orientation="vertical" flexItem />}
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          divider={<Divider orientation="vertical" flexItem />}
         >
           <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode}>
-            {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+            {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
-          <IconButton
-            onClick={handleClick}
-            size="small"
-            sx={{ ml: 2 }}
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            <Avatar
-              src={currentUser?.profile_image}
-              sx={{ width: 32, height: 32 }}
-            />
-          </IconButton>
+          <>
+            <IconButton
+              onClick={handleClick}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-label="account"
+              aria-controls={open ? "account-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+            >
+              <Avatar
+                src={currentUser?.profile_image}
+                sx={{ width: 32, height: 32 }}
+              />
+            </IconButton>
+            {currentUser ? currentUser.username : null}
+          </>
         </Stack>
         <Menu
           anchorEl={anchorEl}
@@ -124,10 +129,17 @@ function NavBar() {
         >
           {currentUser ? (
             <div>
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <AccountCircleIcon />
+                </ListItemIcon>
+                Wecome, {currentUser?.username}
+              </MenuItem>
               <Link
                 to={`/profiles/${currentUser?.pk}`}
                 component={NavLink}
                 color="text.primary"
+                aria-label="profile"
               >
                 <MenuItem onClick={handleClose}>
                   <ListItemIcon>
@@ -140,6 +152,7 @@ function NavBar() {
                 to="/create-event"
                 component={NavLink}
                 color="text.primary"
+                aria-label="create event"
               >
                 <MenuItem onClick={handleClose}>
                   <ListItemIcon>
@@ -153,6 +166,7 @@ function NavBar() {
                 component={NavLink}
                 onClick={handleLogout}
                 color="text.primary"
+                aria-label="logout"
               >
                 <MenuItem onClick={handleClose}>
                   <ListItemIcon>
@@ -168,11 +182,9 @@ function NavBar() {
                 to="/login"
                 component={NavLink}
                 color="text.primary"
+                aria-label="login"
               >
-                <MenuItem
-                  onClick={handleClose}
-                  sx={{ textDecoration: "none" }}
-                >
+                <MenuItem onClick={handleClose} sx={{ textDecoration: "none" }}>
                   <ListItemIcon>
                     <Logout fontSize="small" />
                   </ListItemIcon>
@@ -183,11 +195,9 @@ function NavBar() {
                 to="/register"
                 component={NavLink}
                 color="text.primary"
+                aria-label="register"
               >
-                <MenuItem
-                  onClick={handleClose}
-
-                >
+                <MenuItem onClick={handleClose}>
                   <ListItemIcon>
                     <Logout fontSize="small" />
                   </ListItemIcon>
@@ -199,7 +209,6 @@ function NavBar() {
         </Menu>
       </Toolbar>
     </AppBar>
-
   );
 }
 
