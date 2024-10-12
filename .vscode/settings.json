@@ -25,14 +25,14 @@
    "terminal.integrated.gpuAcceleration": "canvas",
    "editor.defaultFormatter": "HookyQR.beautify",
    "[python]": {
-      "editor.defaultFormatter": "mikoz.black-py"
+      "editor.defaultFormatter": "ms-python.black-formatter"
    },
    "[javascript]": {
       "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
    },
    "python.formatting.provider": "none",
    "[javascriptreact]": {
-      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
    },
    "[html]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode"

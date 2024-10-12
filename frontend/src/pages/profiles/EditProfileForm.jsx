@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Container, Paper, Stack, Typography } from "@mui/material";
 import { axiosReq } from "../../api/axiosDefaults";
 import { MuiFileInput } from "mui-file-input";
-import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
+import { useSetCurrentUser } from "../../providers/CurrentUserContext";
 
 
 const EditProfileForm = () => {

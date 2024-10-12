@@ -5,7 +5,7 @@ import useSupercluster from "use-supercluster";
 import { axiosReq } from "../../api/axiosDefaults";
 import MapMarkerPopup from "./MapMarkerPopup";
 import FilterMenu from "./FilterMenu";
-import { useLocation } from "../../contexts/LocationContext";
+import { useLocation } from "../../providers/LocationContext";
 
 function EventMap() {
   const locationData = useLocation();

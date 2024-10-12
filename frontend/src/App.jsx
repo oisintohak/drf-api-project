@@ -2,7 +2,7 @@ import React from "react";
 import { CssBaseline, Stack } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar";
-import { useCurrentUser } from "./contexts/CurrentUserContext";
+import { useCurrentUser } from "./providers/CurrentUserContext";
 import LoginForm from "./pages/auth/Login";
 import RegisterForm from "./pages/auth/Register";
 import CreateEventForm from "./pages/events/CreateEventForm";

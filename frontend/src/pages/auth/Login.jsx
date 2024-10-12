@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Paper, FormHelperText, Stack, Typography } from "@mui/material";
 import { ErrorMessage } from "@hookform/error-message";
-import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
+import { useSetCurrentUser } from "../../providers/CurrentUserContext";
 import { setTokenTimestamp } from "../../utils/utils";
 import useRedirect from "../../hooks/useRedirect";
 

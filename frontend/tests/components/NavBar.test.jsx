@@ -5,16 +5,21 @@ import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import NavBar from "../../src/components/NavBar";
-import { CurrentUserProvider } from "../../src/contexts/CurrentUserContext";
+import { CurrentUserProvider } from "../../src/providers/CurrentUserContext";
 import { server } from "../mocks/server";
+import {db } from "../mocks/db";
+import QueryProvider from "../../src/providers/QueryProvider.jsx";
 
 describe("NavBar", () => {
+  const { user } = db;
   const renderNavBar = () => {
     render(
       <BrowserRouter>
-        <CurrentUserProvider>
-          <NavBar />
-        </CurrentUserProvider>
+        <QueryProvider>
+          <CurrentUserProvider>
+            <NavBar />
+          </CurrentUserProvider>
+        </QueryProvider>
       </BrowserRouter>
     );
     return {
@@ -30,11 +35,11 @@ describe("NavBar", () => {
 
     expect(logoText).toBeInTheDocument();
   });
-  
+
   it.each(["profile", "create event", "logout"])(
     "should render the %s link in the account menu when logged in",
     async (label) => {
-      const { accountToggleButton, user, getLink} = renderNavBar();
+      const { accountToggleButton, user, getLink } = renderNavBar();
       await user.click(accountToggleButton);
 
       const link = await getLink(label);
@@ -55,7 +60,10 @@ describe("NavBar", () => {
       server.use(
         http.get("api/auth/token/refresh/", () => {
           return new HttpResponse(
-            {"detail":"No valid refresh token found.","code":"token_not_valid"},
+            {
+              detail: "No valid refresh token found.",
+              code: "token_not_valid",
+            },
             { status: 401 }
           );
         })
@@ -73,5 +81,4 @@ describe("NavBar", () => {
     const { getLink } = renderNavBar();
     expect(await getLink("favourites")).toBeInTheDocument();
   });
-  
 });

@@ -19,12 +19,12 @@ import Link from "@mui/material/Link";
 import {
   useCurrentUser,
   useSetCurrentUser,
-} from "../contexts/CurrentUserContext";
+} from "../providers/CurrentUserContext";
 import { axiosReq } from "../api/axiosDefaults";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { useColorModeContext } from "../contexts/ThemeContext";
+import { useColorModeContext } from "../providers/ThemeContext";
 import Brightness7 from "@mui/icons-material/Brightness7";
 import Brightness4 from "@mui/icons-material/Brightness4";
 

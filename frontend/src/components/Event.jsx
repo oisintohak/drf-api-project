@@ -27,7 +27,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { axiosRes } from "../api/axiosDefaults";
-import { useCurrentUser } from "../contexts/CurrentUserContext";
+import { useCurrentUser } from "../providers/CurrentUserContext";
 import PopperPopup from "./PopperPopup";
 
 function Event(props) {
