@@ -20,7 +20,7 @@
       "**/core.python*": true,
       "**/CVS": true
    },
-   "files.autoSave": "afterDelay",
+   "files.autoSave": "off",
    "workbench.colorTheme": "Monokai",
    "terminal.integrated.gpuAcceleration": "canvas",
    "editor.defaultFormatter": "HookyQR.beautify",
@@ -28,7 +28,7 @@
       "editor.defaultFormatter": "ms-python.black-formatter"
    },
    "[javascript]": {
-      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
    },
    "python.formatting.provider": "none",
    "[javascriptreact]": {

@@ -6,7 +6,9 @@ export const handlers = [
     const user = db.user.create()
     return HttpResponse.json({ ...user }, { status: 200 })
   }),
-  ...db.event.toHandlers('rest', '/api/')
+  ...db['event'].toHandlers('rest', '/api/'),
+  ...db['event-attendees'].toHandlers('rest', '/api/events/'),
+  ...db['event-favourites'].toHandlers('rest', '/api/events/'),
 ]
 // export const handlers = [
 //   http.post('api/auth/login/', () => {

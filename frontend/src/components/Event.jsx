@@ -1,11 +1,12 @@
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Avatar,
   Badge,
   CardHeader,
+  CircularProgress,
   Divider,
   IconButton,
   MenuItem,
@@ -29,6 +30,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { axiosRes } from "../api/axiosDefaults";
 import { useCurrentUser } from "../providers/CurrentUserContext";
 import PopperPopup from "./PopperPopup";
+import { useCreateFavourite } from "../queries/useCreateFavourite";
+import { useDeleteFavourite } from "../queries/useDeleteFavourite";
+import { useDeleteAttendee } from "../queries/useDeleteAttendee";
+import { useCreateAttendee } from "../queries/useCreateAttendee";
 
 function Event(props) {
   const {
@@ -46,7 +51,6 @@ function Event(props) {
     attendee_count,
     isDetail,
     main_image,
-    setEvents
   } = props;
   const currentUser = useCurrentUser();
   const navigate = useNavigate();
@@ -68,73 +72,10 @@ function Event(props) {
       console.log(err);
     }
   };
-
-  const handleFavourite = async () => {
-    try {
-      const { data } = await axiosRes.post("events/event-favourites/", { event: id });
-      setEvents((prevEvents) => ({
-        ...prevEvents,
-        results: prevEvents.results.map((event) => {
-          return event.id === id
-            ? { ...event, favourite_id: data.id, favourite_count: event.favourite_count + 1 }
-            : event;
-        }),
-      }));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleUnfavourite = async () => {
-    try {
-      await axiosRes.delete(`events/event-favourites/${favourite_id}/`);
-      setEvents((prevEvents) => ({
-        ...prevEvents,
-        results: prevEvents.results.map((event) => {
-          return event.id === id
-            ? { ...event, favourite_id: null, favourite_count: event.favourite_count - 1 }
-            : event;
-        }),
-      }));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleAttend =  async () => {
-    console.log('handleAttend')
-    try {
-      const { data } = await axiosRes.post("events/event-attendees/", { event: id });
-      setEvents((prevEvents) => ({
-        ...prevEvents,
-        results: prevEvents.results.map((event) => {
-          return event.id === id
-          ? { ...event, attendee_id: data.id, attendee_count: event.attendee_count + 1 }
-          : event;
-        }),
-      }));
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  const handleUnattend = async () => {
-    console.log('handleUnattend')
-    try {
-      await axiosRes.delete(`events/event-attendees/${attendee_id}/`);
-      setEvents((prevEvents) => ({
-        ...prevEvents,
-        results: prevEvents.results.map((event) => {
-          return event.id === id
-            ? { ...event, attendee_id: null, attendee_count: event.attendee_count -1 }
-            : event;
-        }),
-      }));
-    } catch (err) {
-      // console.log(err);
-    }
-  }
-
-
+  const { favouriteIsLoading, createFavourite } = useCreateFavourite(id);
+  const { deleteFavourite, deleteFavouriteIsLoading } = useDeleteFavourite(id);
+  const { deleteAttendee, deleteAttendeeIsLoading } = useDeleteAttendee(id);
+  const { createAttendee, attendeeIsLoading } = useCreateAttendee(id);
   const deleteDialog = (
     <Dialog
       open={open}
@@ -167,18 +108,12 @@ function Event(props) {
       popup={
         <MenuList>
           <MenuItem>
-            <Button
-              to={`/events/${id}/edit`}
-              component={NavLink}
-              
-            >
+            <Button to={`/events/${id}/edit`} component={NavLink}>
               Edit
             </Button>
           </MenuItem>
           <MenuItem>
-            <Button onClick={handleClickOpen} >
-              Delete
-            </Button>
+            <Button onClick={handleClickOpen}>Delete</Button>
             {deleteDialog}
           </MenuItem>
         </MenuList>
@@ -187,7 +122,7 @@ function Event(props) {
   );
 
   return (
-    <Card elevation={24} sx={{ maxWidth: isDetail? "20rem": "unset" }}>
+    <Card elevation={24} sx={{ maxWidth: isDetail ? "20rem" : "unset" }}>
       <CardHeader
         avatar={<Avatar src={profile_image} />}
         title={
@@ -205,7 +140,7 @@ function Event(props) {
       <CardMedia
         sx={{ height: "10rem", objectFit: "cover" }}
         component="img"
-        image={main_image || 'default.jpg'}
+        image={main_image || "default.jpg"}
       />
       <CardContent>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
@@ -222,49 +157,55 @@ function Event(props) {
       </CardContent>
       <CardActions>
         {!isDetail && (
-          <Link to={`/events/${id}`} component={NavLink} >
-            <Button  size="small">Details</Button>
+          <Link to={`/events/${id}`} component={NavLink}>
+            <Button size="small">Details</Button>
           </Link>
-        )}{
-          currentUser && !is_creator && (<>
+        )}
+        {currentUser && !is_creator && (
+          <>
             {favourite_id ? (
               <IconButton
-                onClick={handleUnfavourite}
+                aria-label="click to unfavourite"
+                onClick={() => deleteFavourite(favourite_id)}
               >
                 <Badge badgeContent={favourite_count} color="primary">
-                <FavoriteIcon sx={{color: 'pink'}} />
+                  <FavoriteIcon sx={{ color: "pink" }} />
                 </Badge>
               </IconButton>
             ) : (
               <IconButton
-                onClick={handleFavourite}
+                aria-label="click to favourite"
+                onClick={createFavourite}
               >
                 <Badge badgeContent={favourite_count} color="primary">
-                <FavoriteBorderIcon />
+                  <FavoriteBorderIcon />
                 </Badge>
               </IconButton>
             )}
+            {favouriteIsLoading || deleteFavouriteIsLoading && <CircularProgress size={24} />}
           </>
-          )}
-        {
-          currentUser && (
-            <>
-              {attendee_id ? (
-                <IconButton onClick={handleUnattend} >
+        )}
+        {currentUser && (
+          <>
+            {attendee_id ? (
+              <IconButton
+                aria-label="click to unnattend"
+                onClick={() => deleteAttendee(attendee_id)}
+              >
                 <Badge badgeContent={attendee_count} color="primary">
-                  <EventAvailableIcon color='success' />
-                  </Badge>
-                </IconButton>
-              ) : (
-                <IconButton onClick={handleAttend} >
+                  <EventAvailableIcon color="success" />
+                </Badge>
+              </IconButton>
+            ) : (
+              <IconButton aria-label="click to attend" onClick={createAttendee}>
                 <Badge badgeContent={attendee_count} color="primary">
                   <EventAvailableIcon />
-                  </Badge>
-                </IconButton>
-              )}
-            </>
-          )
-        }
+                </Badge>
+              </IconButton>
+            )}
+            {attendeeIsLoading || deleteAttendeeIsLoading && <CircularProgress size={24} />}
+          </>
+        )}
       </CardActions>
     </Card>
   );
