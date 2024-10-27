@@ -11,8 +11,8 @@ urlpatterns = [
         'api/auth/registration/', include('dj_rest_auth.registration.urls')
     ),
     path('api/profiles/', include('profiles.urls')),
-    path('api/events/', include('events.urls')),
+    path('api/', include('events.urls')),
     # path('events/', include('events.urls')),
     # path('', TemplateView.as_view(template_name='index.html')),
-    re_path(r'.*', Index.as_view())
+    # re_path(r'.*', Index.as_view())
 ]

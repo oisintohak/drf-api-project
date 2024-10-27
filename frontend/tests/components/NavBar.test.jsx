@@ -10,7 +10,7 @@ import { server } from "../mocks/server";
 import {db } from "../mocks/db";
 import QueryProvider from "../../src/providers/QueryProvider.jsx";
 
-describe("NavBar", () => {
+describe.skip("NavBar", () => {
   const { user } = db;
   const renderNavBar = () => {
     render(

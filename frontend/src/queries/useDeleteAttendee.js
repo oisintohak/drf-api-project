@@ -7,11 +7,9 @@ export function useDeleteAttendee(eventId) {
   const { mutate: deleteAttendee, isLoading: deleteAttendeeIsLoading } =
     useMutation({
       mutationFn: async (attendeeId) => {
-        await axiosRes.delete(`events/event-attendees/${attendeeId}/`);
+        await axiosRes.delete(`attendees/${attendeeId}/`);
       },
       onSuccess: () => {
-        try {
-
         queryClient.setQueryData(["events", `${eventId}`], (prevEvent) => {
           return prevEvent
             ? {
@@ -40,8 +38,7 @@ export function useDeleteAttendee(eventId) {
           }
           return prevEvents;
         });
-      } catch (err) {
-        console.log(err);}
+        queryClient.invalidateQueries({ queryKey: ['attendees', `${eventId}`] })
       },
     });
 

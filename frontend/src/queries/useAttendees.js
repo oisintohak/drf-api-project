@@ -3,9 +3,9 @@ import { axiosReq } from "../api/axiosDefaults";
 
 const useAttendees = (eventId) => {
   return useQuery({
-    queryKey: ["attendees", eventId],
+    queryKey: ["attendees", `${eventId}`],
     queryFn: async () => {
-      const {data} = await axiosReq.get(`events/event-attendees/?event=${eventId}`);
+      const {data} = await axiosReq.get(`attendees/?event=${eventId}`);
       return data;
     },
   });

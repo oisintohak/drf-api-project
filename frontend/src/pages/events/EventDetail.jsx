@@ -1,6 +1,14 @@
 import React, { useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import { Card, CardContent, Link, Paper, Stack } from "@mui/material";
+import {
+  Alert,
+  Card,
+  CardContent,
+  CardHeader,
+  Link,
+  Paper,
+  Stack,
+} from "@mui/material";
 import Event from "../../components/Event";
 import EventSkeleton from "./EventSkeleton";
 import List from "@mui/material/List";
@@ -12,22 +20,17 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import useEvent from "../../queries/useEvent";
 import useAttendees from "../../queries/useAttendees";
+import AttendeeSkeleton from "./AttendeeSkeleton";
 
 function EventDetail() {
   const { id } = useParams();
-  
-  const {
-    status: eventStatus,
-    data: event,
-    error: eventError,
-  } = useEvent(id);
-  
-  
+  const { status: eventStatus, data: event, error: eventError } = useEvent(id);
+
   const {
     status: attendeesStatus,
     data: attendees,
     error: attendeesError,
-  } = useAttendees(id)
+  } = useAttendees(id);
 
   return (
     <Stack
@@ -40,63 +43,91 @@ function EventDetail() {
       {eventStatus === "pending" ? (
         <EventSkeleton />
       ) : eventStatus === "error" ? (
-        <span>Error: {eventError.message}</span>
+        <Card elevation={24} sx={{ width: "20rem" }}>
+          <CardContent>
+            <Alert
+              aria-labelledby="event_error_message"
+              variant="outlined"
+              severity="error"
+            >
+              <span id="event_error_message">
+                Error loading event: {eventError.message}
+              </span>
+            </Alert>
+          </CardContent>
+        </Card>
       ) : (
-        <Event {...event}  isDetail />
+        <Event {...event} isDetail />
       )}
-      {attendeesStatus === "pending" ? (
-        <EventSkeleton />
-      ) : attendeesStatus === "error" ? (
-        <span>Error: {attendeesError.message}</span>
-      ) : (
-        <>
-            <Card elevation={24} sx={{ width: "20rem" }}>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Attendees
-                </Typography>
+      <Card elevation={24} sx={{ width: "20rem" }}>
+        <CardHeader
+          title={
+            <Typography variant="h5" color="text.secondary" gutterBottom>
+              Attendees
+            </Typography>
+          }
+        />
+        <CardContent>
+          {attendeesStatus === "pending" ? (
+            <AttendeeSkeleton />
+          ) : attendeesStatus === "error" ? (
+            <Alert
+              aria-labelledby="attendee_error_message"
+              variant="outlined"
+              severity="error"
+            >
+              <span id="attendee_error_message">
+                Error loading attendees: {attendeesError.message}
+              </span>
+            </Alert>
+          ) : (
+            <>
+              {attendees.results?.length > 0 ? (
                 <List>
-                
-                  {attendees.results.length > 0 ? attendees.results.map((attendee) => (
-                    <Link
-                      key={attendee.id}
-                      to={`/events/${id}/edit`}
-                      component={NavLink}
-                    >
-                      <ListItem alignItems="flex-start">
-                        <ListItemAvatar>
-                          <Avatar
-                            alt="User Profile Image"
-                            src={attendee.profile_image}
+                  {attendees.results?.map((attendee) => (
+                    <ListItem key={attendee.id}>
+                      <Link
+                        to={`/profiles/${attendee.user_id}`}
+                        component={NavLink}
+                      >
+                        <Stack direction="row">
+                          <ListItemAvatar>
+                            <Avatar
+                              alt="User Profile Image"
+                              src={attendee.profile_image}
+                            />
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={attendee.username}
+                            secondary={
+                              <React.Fragment>
+                                <Typography
+                                  component="span"
+                                  variant="body2"
+                                  sx={{
+                                    color: "text.primary",
+                                    display: "inline",
+                                  }}
+                                >
+                                  {attendee.username}
+                                </Typography>
+                                {attendee.bio ? attendee.bio : "this users bio"}
+                              </React.Fragment>
+                            }
                           />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={attendee.username}
-                          secondary={
-                            <React.Fragment>
-                              <Typography
-                                component="span"
-                                variant="body2"
-                                sx={{
-                                  color: "text.primary",
-                                  display: "inline",
-                                }}
-                              >
-                                {attendee.username}
-                              </Typography>
-                              {attendee.bio ? attendee.bio : "this users bio"}
-                            </React.Fragment>
-                          }
-                        />
-                      </ListItem>
-                      <Divider variant="inset" component="li" />
-                    </Link>
-                  )): null}
+                        </Stack>
+                      </Link>
+                      <Divider variant="inset" />
+                    </ListItem>
+                  ))}
                 </List>
-              </CardContent>
-            </Card>
-        </>
-      )}
+              ) : (
+                <Typography variant="body1">No attendees yet</Typography>
+              )}
+            </>
+          )}
+        </CardContent>
+      </Card>
     </Stack>
   );
 }

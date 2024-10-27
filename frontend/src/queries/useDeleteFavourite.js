@@ -7,7 +7,7 @@ export function useDeleteFavourite(eventId) {
   const { mutate: deleteFavourite, isLoading: deleteFavouriteIsLoading } =
     useMutation({
       mutationFn: async (favouriteId) => {
-        await axiosRes.delete(`events/event-favourites/${favouriteId}/`);
+        await axiosRes.delete(`favourites/${favouriteId}/`);
       },
       onSuccess: () => {
         queryClient.setQueryData(["events", `${eventId}`], (prevEvent) => {

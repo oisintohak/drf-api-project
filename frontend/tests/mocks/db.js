@@ -1,6 +1,6 @@
-import { factory, manyOf, oneOf, primaryKey, nullable } from '@mswjs/data';
-import { faker } from '@faker-js/faker';
-import ProfilePage from '../../src/pages/profiles/ProfilePage';
+import { factory, manyOf, oneOf, primaryKey, nullable } from "@mswjs/data";
+import { faker } from "@faker-js/faker";
+import ProfilePage from "../../src/pages/profiles/ProfilePage";
 
 export const db = factory({
   user: {
@@ -9,44 +9,48 @@ export const db = factory({
     email: faker.internet.email,
     first_name: faker.person.firstName,
     last_name: faker.person.lastName,
-    profile_id: () => faker.number.int({min: 1, max: 100}),
-    profile_image: () =>faker.image.url()
+    profile_id: () => faker.number.int({ min: 1, max: 100 }),
+    profile_image: () => faker.image.url(),
   },
-  'event': {
+  event: {
     id: primaryKey(faker.number.int),
-    title: () =>faker.lorem.words(2),
+    created_by: oneOf("user"),
+    title: () => faker.lorem.words(2),
     starts_at: () => faker.date.recent().toISOString(),
     ends_at: () => faker.date.recent().toISOString(),
     lat: faker.location.latitude,
     long: faker.location.longitude,
     address: faker.location.streetAddress,
-    place_id: () =>faker.string.alphanumeric(10),
+    place_id: () => faker.string.alphanumeric(10),
     created_at: () => faker.date.recent().toISOString(),
     updated_at: () => faker.date.recent().toISOString(),
     is_creator: faker.datatype.boolean,
     profile_id: faker.number.int,
-    profile_image: () =>faker.image.url(),
+    profile_image: () => faker.image.url(),
     creator_username: faker.internet.userName,
     is_over: faker.datatype.boolean,
-    main_image: () =>faker.image.url(),
+    main_image: () => faker.image.url(),
     favourite_id: nullable(() => null),
     attendee_id: nullable(() => null),
-    favourite_count: () => faker.number.int({min: 0, max: 100}),
-    attendee_count: () => faker.number.int({min: 0, max: 100}),
-    
+    favourite_count: () => faker.number.int({ min: 0, max: 100 }),
+    attendee_count: () => faker.number.int({ min: 0, max: 100 }),
   },
-  'event-attendees': {
+  attendee: {
+    id: primaryKey(faker.number.int),
+    user: faker.number.int,
+    event: faker.number.int,
+    created_at: () => faker.date.recent().toISOString(),
+    user_id: ()=> faker.number.int(),
+    profile_image: () => faker.image.url(),
+    username: () => faker.internet.userName(),
+    bio: () => faker.internet.userName(),
+  },
+  "favourite": {
     id: primaryKey(faker.number.int),
     user: faker.number.int,
     event: faker.number.int,
     created_at: () => faker.date.recent().toISOString(),
   },
-  'event-favourites': {
-    id: primaryKey(faker.number.int),
-    user: faker.number.int,
-    event: faker.number.int,
-    created_at: () => faker.date.recent().toISOString(),
-  }
   /* {
     "id": 131,
     "title": "test",
@@ -72,6 +76,4 @@ export const db = factory({
     "favourite_count": 1,
     "attendee_count": 1
   } */
-  
 });
-

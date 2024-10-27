@@ -6,7 +6,10 @@ import Skeleton from "@mui/material/Skeleton";
 
 function EventSkeleton() {
   return (
-    <Card sx={{ maxWidth: "20rem", minWidth: "20rem", m: 2 }}>
+    <Card
+    role="progressbar"
+    aria-label="Loading event"
+    sx={{ maxWidth: "20rem", minWidth: "20rem", m: 2 }}>
       <CardHeader
         avatar={
           <Skeleton

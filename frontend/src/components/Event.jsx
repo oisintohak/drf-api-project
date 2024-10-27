@@ -175,7 +175,12 @@ function Event(props) {
             ) : (
               <IconButton
                 aria-label="click to favourite"
-                onClick={createFavourite}
+                onClick={
+                  () => {
+                    // console.log('click create favourite')
+                    createFavourite()
+                  }
+                  }
               >
                 <Badge badgeContent={favourite_count} color="primary">
                   <FavoriteBorderIcon />
@@ -197,7 +202,10 @@ function Event(props) {
                 </Badge>
               </IconButton>
             ) : (
-              <IconButton aria-label="click to attend" onClick={createAttendee}>
+              <IconButton aria-label="click to attend" onClick={() => {
+                // console.log('click create attendee')
+                createAttendee()
+              }}>
                 <Badge badgeContent={attendee_count} color="primary">
                   <EventAvailableIcon />
                 </Badge>

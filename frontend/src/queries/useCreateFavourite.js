@@ -7,7 +7,7 @@ export function useCreateFavourite(eventId) {
   const { mutate: createFavourite, isLoading: favouriteIsLoading } =
     useMutation({
       mutationFn: async () => {
-        const { data } = await axiosRes.post("events/event-favourites/", {
+        const { data } = await axiosRes.post("favourites/", {
           event: eventId,
         });
         return data;
@@ -42,6 +42,9 @@ export function useCreateFavourite(eventId) {
           return prevEvents;
         });
       },
+      onError: (error) => {
+        console.log(error)
+      }
     });
 
   return { favouriteIsLoading, createFavourite };

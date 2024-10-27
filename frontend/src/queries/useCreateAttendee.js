@@ -6,45 +6,44 @@ export function useCreateAttendee(eventId) {
 
   const { mutate: createAttendee, isLoading: attendeeIsLoading } = useMutation({
     mutationFn: async () => {
-      const { data } = await axiosRes.post("events/event-attendees/", {
+      const { data } = await axiosRes.post("/attendees/", {
         event: eventId,
       });
       return data;
     },
     onSuccess: (data) => {
-      try {
-
-        queryClient.setQueryData(["events", `${eventId}`], (prevEvent) => {
-          return prevEvent
-            ? {
-                ...prevEvent,
-                attendee_id: data.id,
-                attendee_count: prevEvent.attendee_count + 1,
-              }
-            : prevEvent;
-        });
-        queryClient.setQueryData(["events"], (prevEvents) => {
-          if (prevEvents) {
-            if (typeof prevEvents.results?.map === "function") {
-              return {
-                ...prevEvents,
-                results: prevEvents.results.map((event) => {
-                  return event.id === eventId
-                    ? {
-                        ...event,
-                        attendee_id: data.id,
-                        attendee_count: event.attendee_count + 1,
-                      }
-                    : event;
-                }),
-              };
+      queryClient.setQueryData(["events", `${eventId}`], (prevEvent) => {
+        return prevEvent
+          ? {
+              ...prevEvent,
+              attendee_id: data.id,
+              attendee_count: prevEvent.attendee_count + 1,
             }
+          : prevEvent;
+      });
+      queryClient.setQueryData(["events"], (prevEvents) => {
+        if (prevEvents) {
+          if (typeof prevEvents.results?.map === "function") {
+            return {
+              ...prevEvents,
+              results: prevEvents.results.map((event) => {
+                return event.id === eventId
+                  ? {
+                      ...event,
+                      attendee_id: data.id,
+                      attendee_count: event.attendee_count + 1,
+                    }
+                  : event;
+              }),
+            };
           }
-          return prevEvents;
-        });
-      } catch (err) {
-        console.log(err);
-      }
+        }
+        return prevEvents;
+      });
+      queryClient.invalidateQueries({ queryKey: ["attendees", `${eventId}`] });
+    },
+    onError: (error) => {
+      console.log(error);
     },
   });
 
